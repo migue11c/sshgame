@@ -5,8 +5,12 @@
 #include "globals.h"
 
 void textAnimation(std::string text, int y, int x);
+void loadMusic();
+void playMusic();
 void loadKey();
 void playKey();
+void loadAudio();
+void dumpAudio();
 void drawLogo(int ymax, int xmax);
 void settingsScreen(int ymax, int xmax);
 int mainScreenOptions(int ymax, int xmax);

@@ -2,6 +2,7 @@
 #define _GLBL_H
 
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <string>
 #include <vector>
 
@@ -52,7 +53,8 @@ namespace player {
 };
 
 namespace gameaudio {
-    inline sf::Sound keybsound;
+    inline sf::SoundBuffer keybuffer;
+    inline sf::SoundBuffer musicbuffer;
 }
 
 #endif

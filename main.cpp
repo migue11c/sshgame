@@ -1,5 +1,6 @@
 #include <ncurses/ncurses.h>
 #include <string>
+#include <thread>
 #include <SFML/Audio.hpp>
 
 //#include "include/mainmenu.cpp"
@@ -14,6 +15,9 @@ int main(){
     //initializing
     int y,x,yMax,xMax;
     LogThis("made it compile");
+    loadAudio();
+    std::thread musicplayer(playMusic);
+    musicplayer.detach();
 
     initscr();
     getmaxyx(stdscr,yMax,xMax);
@@ -56,5 +60,6 @@ int main(){
     clear();
     refresh();
     endwin();
+    dumpAudio();
     return 0;
 }
