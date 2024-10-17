@@ -2,10 +2,11 @@
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/System/Sleep.hpp>
-#include <chrono>
+#include <thread>
 #include "common.h"
 #include "globals.h"
 
+using namespace std::chrono_literals;
 
 void loadAudio(){
     loadKey();
@@ -26,13 +27,17 @@ void loadKey(){
 
 void playMusic(){
     sf::Sound bgm(gameaudio::musicbuffer);
+    bgm.setLoop(true);
     bgm.play();
-    sf::sleep(gameaudio::musicbuffer.getDuration());
+    while (gameaudio::kill != true){
+        std::this_thread::sleep_for(100ms);
+    }
     return;
 }
 
 void loadMusic(){
-    gameaudio::musicbuffer.loadFromFile("menu.ogg");
+    std::string dir = "resources/audio/" + gameaudio::musicdir;
+    gameaudio::musicbuffer.loadFromFile(dir);
 }
 
 void dumpAudio(){

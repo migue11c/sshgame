@@ -8,6 +8,7 @@
 //#include "include/login.cpp"
 //#include "include/logs.cpp"
 #include "include/common.h"
+#include "include/globals.h"
 #include "include/logs.h"
 #include "include/player.h"
 
@@ -51,6 +52,7 @@ int main(){
             return 1;
         }
     }
+    gameaudio::kill = true;
     LogThis(player::mydata.name);
     LogThis(player::mydata.faction);
     drawUser();

@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "common.h"
+#include "globals.h"
 #include "player.h"
 #include "logs.h"
 
@@ -15,38 +16,77 @@ void drawLogo(int ymax, int xmax) {
 }
 
 void settingsScreen(int ymax, int xmax) {
-    ifstream settings("settings");
-    WINDOW* sets = newwin(20, 50, ymax/2 - 10, xmax/2 - 50);
+    WINDOW* sets = newwin(10, 30, ymax/2 - 8, xmax/2 - 15);
     keypad(sets, true);
-    string options[] = {"Sleep Timer",""};
-    wgetch(sets);
-    wrefresh(sets);
+    string options[3] = {"SFX Volume","BGM Volume","Save..."};
+    int choice,hl;
+    hl = 0;
+    while(1){
+        for (int i = 0; i < 3; i++) {// change with amount of options
+            if (i == hl){
+                mvwprintw(sets, i, 0, "%s <",options[i].c_str());
+            }
+            else
+                mvwprintw(sets, i, 0, "%s  ",options[i].c_str());
+            switch (i) {
+                case 0:
+                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", settings::SFXVolume);
+                case 1:
+                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", settings::BGMVolume);
+                default:
+                    mvwprintw(sets, i, getmaxx(sets)-3, "");
+            }
+            wrefresh(sets);
+        }
+        choice = wgetch(sets);
+        std::thread press(playKey);
+        press.detach();
 
+        opts:
+        switch (choice) {
+            case KEY_UP:{
+                hl--;
+                if (hl == -1)
+                    hl = 0;
+                break;
+            }
+            case KEY_DOWN:{
+                hl++;
+                if (hl == 3) //change this too
+                    hl = 2;
+                break;
+            }
+            default:
+                break;
+        }
+        if (choice == 10)
+            break;
+    }
     wclear(sets);
+    clear();
     delwin(sets);
-    refresh();
+    wrefresh(sets);
 }
 
 int mainScreenOptions(int ymax, int xmax){
     WINDOW* menu = newwin(3, 20, 5*ymax/6, xmax/8);
     keypad(menu, true);
-    string options[3] = {"[Login]", "[Settings]", "[Exit]"};
-    refresh();
-    wrefresh(menu);
+    string options[3] = {"Login", "Settings", "Exit"};
     int choice,hl;
     hl = 0;
     while(1){
         for (int i = 0; i < 3; i++){
             if (i == hl) {
                 wattron(menu, A_REVERSE);
+                mvwprintw(menu, i, 0, "[%s]",options[i].c_str());
             }
-            mvwprintw(menu, i, 0, "%s",options[i].c_str());
+            mvwprintw(menu, i, 0, "[%s]",options[i].c_str());
             wattroff(menu, A_REVERSE);
             wrefresh(menu);
         }
         choice = wgetch(menu);
-        std::thread player(playKey);
-        player.detach();
+        std::thread press(playKey);
+        press.detach();
 
         switch (choice){
             case KEY_UP:
@@ -66,6 +106,7 @@ int mainScreenOptions(int ymax, int xmax){
             break;
         }
     }
+    wclear(menu);
     clear();
     delwin(menu);
     refresh();

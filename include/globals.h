@@ -53,8 +53,15 @@ namespace player {
 };
 
 namespace gameaudio {
+    inline bool kill = false;
+    const std::string musicdir = "music/menu.ogg";
     inline sf::SoundBuffer keybuffer;
     inline sf::SoundBuffer musicbuffer;
-}
+};
+
+namespace settings {
+    inline int SFXVolume = 100;
+    inline int BGMVolume = 100;
+};
 
 #endif
