@@ -25,8 +25,7 @@ void textAnimation(string text, int y, int x){
         wait();
     }
     curs_set(0);
-    wclear(anim); //make sure to always wrefresh after you want to show something
-    wrefresh(anim);
+    //wclear(anim); //make sure to always wrefresh after you want to show something
     delwin(anim);
     refresh();
 }
