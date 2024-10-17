@@ -3,11 +3,10 @@
 
 #include "world.h"
 #include "logs.h"
-using namespace std;
 
 void getWorldData(){
-    string dir = "world/" + world::worldName + ".dat";
-    ifstream data(dir);
+    std::string dir = "world/" + world::worldName + ".dat";
+    std::ifstream data(dir);
     if (data.bad()){
         LogThis("bad data location");
     }
@@ -29,21 +28,21 @@ void getWorldData(){
     LogThis("retrieved %s.dat",player::username.c_str());
 }
 void writeWorldData(){
-    string dir = "world/" + player::username + ".dat";
-    ofstream data(dir);
-    data << world::worldName << endl;
-    data << world::worldTime.day << endl;
-    data << world::worldTime.hour << endl;
+    std::string dir = "world/" + player::username + ".dat";
+    std::ofstream data(dir);
+    data << world::worldName << std::endl;
+    data << world::worldTime.day << std::endl;
+    data << world::worldTime.hour << std::endl;
     for (int i = 0; i<26; i++){
         data << world::dangerLevel[i] << " ";
     }
-    data << endl;
+    data << std::endl;
     for (int i = 0; i<52; i++){
-        data << world::maplist[i].name << endl;
-        data << world::maplist[i].x << " " << world::maplist[i].y << " " << world::maplist[i].id << " " << endl;
+        data << world::maplist[i].name << std::endl;
+        data << world::maplist[i].x << " " << world::maplist[i].y << " " << world::maplist[i].id << " " << std::endl;
     }
     for (int i = 0; i<100; i++){
-        data << world::itemlist[i].name << endl << world::itemlist[i].effect << world::itemlist[i].id << endl;
+        data << world::itemlist[i].name << std::endl << world::itemlist[i].effect << world::itemlist[i].id << std::endl;
     }
 }
 

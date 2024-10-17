@@ -36,7 +36,12 @@ namespace world {
     inline int dangerLevel[26];
     inline mapDetails maplist[52];
     inline itemData itemlist[100];
-}
+};
+
+struct settings{
+    int SFXVolume;
+    int BGMVolume;
+};
 
 struct playerData{
     std::string name;
@@ -59,9 +64,8 @@ namespace gameaudio {
     inline sf::SoundBuffer musicbuffer;
 };
 
-namespace settings {
-    inline int SFXVolume = 100;
-    inline int BGMVolume = 100;
+namespace clset {
+    inline settings sets = {100,100};
 };
 
 #endif

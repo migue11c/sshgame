@@ -18,6 +18,7 @@ void drawLogo(int ymax, int xmax) {
 void settingsScreen(int ymax, int xmax) {
     WINDOW* sets = newwin(10, 30, ymax/2 - 8, xmax/2 - 15);
     keypad(sets, true);
+    curs_set(1);
     string options[3] = {"SFX Volume","BGM Volume","Save..."};
     int choice,hl;
     hl = 0;
@@ -30,9 +31,9 @@ void settingsScreen(int ymax, int xmax) {
                 mvwprintw(sets, i, 0, "%s  ",options[i].c_str());
             switch (i) {
                 case 0:
-                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", settings::SFXVolume);
+                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", clset::sets.SFXVolume);
                 case 1:
-                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", settings::BGMVolume);
+                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", clset::sets.BGMVolume);
                 default:
                     mvwprintw(sets, i, getmaxx(sets)-3, "");
             }
@@ -56,16 +57,15 @@ void settingsScreen(int ymax, int xmax) {
                     hl = 2;
                 break;
             }
-            default:
-                break;
+            default: if (choice == 10) {goto end;} //this goes to end regardless of the result
+            //you need to write a way to do settings within the function
         }
-        if (choice == 10)
-            break;
     }
+    end:
     wclear(sets);
     clear();
-    delwin(sets);
-    wrefresh(sets);
+    delwin(sets); //make sure to always refresh() after delwin and not wrefresh(win)!!!
+    refresh();
 }
 
 int mainScreenOptions(int ymax, int xmax){

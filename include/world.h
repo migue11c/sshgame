@@ -1,7 +1,6 @@
 #ifndef _WRLD_H
 #define _WRLD_H
 
-#include <string>
 #include "globals.h"
 
 void getWorldData();

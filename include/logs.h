@@ -2,9 +2,8 @@
 #define _LOG_H
 
 #include <string>
-using namespace std;
 
-void LogThis(string txt,...);
-void ErrLog(string txt,...);
+void LogThis(std::string txt,...);
+void ErrLog(std::string txt,...);
 
 #endif
