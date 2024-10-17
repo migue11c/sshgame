@@ -1,5 +1,5 @@
 # sshgame
-tui game played over ssh
+tui game that isnt actually played over ssh, that was just the initial name
 
 done:
   - main and login menus
