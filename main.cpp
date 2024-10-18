@@ -8,6 +8,7 @@
 //#include "include/map.cpp"
 //#include "include/login.cpp"
 //#include "include/logs.cpp"
+#include "include/audiostuff.h"
 #include "include/common.h"
 #include "include/globals.h"
 #include "include/logs.h"

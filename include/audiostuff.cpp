@@ -4,7 +4,7 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/System/Sleep.hpp>
 #include <thread>
-#include "common.h"
+#include "audiostuff.h"
 #include "globals.h"
 
 using namespace std::chrono_literals;
@@ -14,17 +14,22 @@ void loadAudio(){
     //loadMusic();
 }
 
-void playKey(){
-    sf::Sound keybsound(gameaudio::keybuffer);
+void playKey(const int &i){
+    int n=0;
+    if (i!=10){
+        n = 1;
+    }
+    sf::Sound keybsound(gameaudio::keybuffer[n]);
     keybsound.setVolume(30.0f);
     keybsound.play();
-    sf::sleep(gameaudio::keybuffer.getDuration());
+    sf::sleep(gameaudio::keybuffer[n].getDuration());
     keybsound.resetBuffer();
     return;
 }
 
 void loadKey(){
-    gameaudio::keybuffer.loadFromFile("kb1.mp3");
+    gameaudio::keybuffer[0].loadFromFile("kb1.mp3");
+    gameaudio::keybuffer[1].loadFromFile("kb2.mp3");
 }
 
 void playMusic(){
@@ -45,5 +50,6 @@ void loadMusic(){
 void dumpAudio(){
     sf::SoundBuffer clear;
     sf::Music clearm;
-    gameaudio::keybuffer = clear;
+    gameaudio::keybuffer[0] = clear;
+    gameaudio::keybuffer[1] = clear;
 }

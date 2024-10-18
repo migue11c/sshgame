@@ -3,15 +3,14 @@
 #include <string>
 #include <thread>
 
+#include "audiostuff.h"
 #include "common.h"
 #include "globals.h"
 #include "player.h"
 #include "logs.h"
 
-using namespace std;
-
 void drawLogo(int ymax, int xmax) {
-    ifstream logo("logo");
+    std::ifstream logo("logo");
     logo.close();
 }
 
@@ -19,7 +18,7 @@ void settingsScreen(int ymax, int xmax) {
     WINDOW* sets = newwin(10, 30, ymax/2 - 8, xmax/2 - 15);
     keypad(sets, true);
     curs_set(1);
-    string options[3] = {"SFX Volume","BGM Volume","Save..."};
+    std::string options[3] = {"SFX Volume","BGM Volume","Save..."};
     int choice,hl;
     hl = 0;
     while(1){
@@ -40,7 +39,7 @@ void settingsScreen(int ymax, int xmax) {
             wrefresh(sets);
         }
         choice = wgetch(sets);
-        std::thread press(playKey);
+        std::thread press(playKey, choice);
         press.detach();
 
         opts:
@@ -71,7 +70,7 @@ void settingsScreen(int ymax, int xmax) {
 int mainScreenOptions(int ymax, int xmax){
     WINDOW* menu = newwin(3, 20, 5*ymax/6, xmax/8);
     keypad(menu, true);
-    string options[3] = {"Login", "Settings", "Exit"};
+    std::string options[3] = {"Login", "Settings", "Exit"};
     int choice,hl;
     hl = 0;
     while(1){
@@ -85,7 +84,7 @@ int mainScreenOptions(int ymax, int xmax){
             wrefresh(menu);
         }
         choice = wgetch(menu);
-        std::thread press(playKey);
+        std::thread press(playKey, choice);
         press.detach();
 
         switch (choice){

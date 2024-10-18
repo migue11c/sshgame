@@ -61,7 +61,7 @@ namespace player {
 namespace gameaudio {
     inline bool kill = false;
     const std::string musicdir = "music/menu.ogg";
-    inline sf::SoundBuffer keybuffer;
+    inline sf::SoundBuffer keybuffer[2];
     inline sf::Music music;
 };
 

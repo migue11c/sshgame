@@ -4,7 +4,7 @@
 #include <string>
 #include <thread>
 
-#include "common.h"
+#include "audiostuff.h"
 #include "player.h"
 #include "logs.h"
 
@@ -64,8 +64,9 @@ bool login(int ymax, int xmax){
         for (int i=0;i<15;i++){
             uInp:
             chr = getch();
-            std::thread player(playKey);
-            player.detach();
+            std::thread press(playKey,chr); //this right here took me so long
+            press.detach();
+
             if (chr == KEY_BACKSPACE || chr == KEY_DC || chr == 127){
                 if (i==0)
                     goto uInp;
@@ -84,6 +85,9 @@ bool login(int ymax, int xmax){
                     mvprintw(ymax/2 +5, xmax/2 -14, "Do not leave the field blank");
                     mvprintw(ymax/2 +6, xmax/2 -7, "(Press Enter)");
                     getch();
+                    std::thread press(playKey,chr);
+                    press.detach();
+
                     move(ymax/2 + 5, 0);
                     clrtobot();
                     move(ymax/2 - 1, xmax/2 - 3);
@@ -100,8 +104,9 @@ bool login(int ymax, int xmax){
         for (int i=0;i<15;i++){
             pInp:
             chr = getch();
-            std::thread player(playKey);
-            player.detach();
+            std::thread press(playKey,chr);
+            press.detach();
+
             if (chr == KEY_BACKSPACE || chr == KEY_DC || chr == 127){
                 if (i==0)
                     goto pInp;
@@ -120,6 +125,9 @@ bool login(int ymax, int xmax){
                     mvprintw(ymax/2 +5, xmax/2 -14, "Do not leave the field blank");
                     mvprintw(ymax/2 +6, xmax/2 -7, "(Press Enter)");
                     getch();
+                    std::thread press(playKey,chr);
+                    press.detach();
+
                     move(ymax/2 + 5, 0);
                     clrtobot();
                     move(ymax/2 + 1, xmax/2 - 3);

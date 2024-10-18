@@ -6,7 +6,7 @@
 void loadMusic();
 void playMusic();
 void loadKey();
-void playKey();
+void playKey(const int &i);
 void loadAudio();
 void dumpAudio();
 
