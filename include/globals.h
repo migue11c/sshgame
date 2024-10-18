@@ -2,6 +2,7 @@
 #define _GLBL_H
 
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <string>
 #include <vector>
@@ -61,7 +62,7 @@ namespace gameaudio {
     inline bool kill = false;
     const std::string musicdir = "music/menu.ogg";
     inline sf::SoundBuffer keybuffer;
-    inline sf::SoundBuffer musicbuffer;
+    inline sf::Music music;
 };
 
 namespace clset {

@@ -1,3 +1,4 @@
+#include <SFML/Audio/Music.hpp>
 #include <ncurses/ncurses.h>
 #include <string>
 #include <thread>
