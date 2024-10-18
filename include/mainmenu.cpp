@@ -17,25 +17,29 @@ void drawLogo(int ymax, int xmax) {
 void settingsScreen(int ymax, int xmax) {
     WINDOW* sets = newwin(10, 30, ymax/2 - 8, xmax/2 - 15);
     keypad(sets, true);
-    curs_set(1);
+    curs_set(0);
     std::string options[3] = {"SFX Volume","BGM Volume","Save..."};
     int choice,hl;
     hl = 0;
     while(1){
         for (int i = 0; i < 3; i++) {// change with amount of options
             if (i == hl){
-                mvwprintw(sets, i, 0, "%s <",options[i].c_str());
+                mvwprintw(sets, i, 0, "> [%s]",options[i].c_str());
+                wattron(sets, A_REVERSE);
             }
             else
-                mvwprintw(sets, i, 0, "%s  ",options[i].c_str());
+                mvwprintw(sets, i, 0, "  [%s]",options[i].c_str());
             switch (i) {
                 case 0:
-                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", clset::sets.SFXVolume);
+                    mvwprintw(sets, i, getmaxx(sets)-5, "[%d]", clset::sets.SFXVolume);
                 case 1:
-                    mvwprintw(sets, i, getmaxx(sets)-3, "%d", clset::sets.BGMVolume);
+                    mvwprintw(sets, i, getmaxx(sets)-5, "[%d]", clset::sets.BGMVolume);
                 default:
-                    mvwprintw(sets, i, getmaxx(sets)-3, "");
+                    mvwprintw(sets, i, getmaxx(sets)-5, "");
             }
+            wattroff(sets, A_REVERSE);
+
+            //wmove(sets, hl, options[hl].length();
             wrefresh(sets);
         }
         choice = wgetch(sets);
@@ -56,7 +60,39 @@ void settingsScreen(int ymax, int xmax) {
                     hl = 2;
                 break;
             }
-            default: if (choice == 10) {goto end;} //this goes to end regardless of the result
+            case KEY_LEFT:{
+                switch (hl) {
+                    case 0:
+                        clset::sets.BGMVolume -= 10;
+                        if (clset::sets.BGMVolume < 0)
+                            clset::sets.BGMVolume = 0;
+                        break;
+                    case 1:
+                        clset::sets.SFXVolume -= 10;
+                        if (clset::sets.SFXVolume < 0)
+                            clset::sets.SFXVolume = 0;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            case KEY_RIGHT:{
+                switch (hl) {
+                    case 0:
+                        clset::sets.BGMVolume += 10;
+                        if (clset::sets.BGMVolume > 100)
+                            clset::sets.BGMVolume = 100;
+                        break;
+                    case 1:
+                        clset::sets.SFXVolume += 10;
+                        if (clset::sets.SFXVolume > 100)
+                            clset::sets.SFXVolume = 100;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            default: if (choice == 10 && hl == 2) {goto end;} //this goes to end regardless of the result
             //you need to write a way to do settings within the function
         }
     }
@@ -77,7 +113,7 @@ int mainScreenOptions(int ymax, int xmax){
         for (int i = 0; i < 3; i++){
             if (i == hl) {
                 wattron(menu, A_REVERSE);
-                mvwprintw(menu, i, 0, "[%s]",options[i].c_str());
+                //mvwprintw(menu, i, 0, "[%s]",options[i].c_str());
             }
             mvwprintw(menu, i, 0, "[%s]",options[i].c_str());
             wattroff(menu, A_REVERSE);

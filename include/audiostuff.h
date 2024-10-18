@@ -3,7 +3,6 @@
 
 #include "globals.h"
 
-void loadMusic();
 void playMusic();
 void loadKey();
 void playKey(const int &i);

@@ -18,6 +18,7 @@ int main(){
     //initializing
     int y,x,yMax,xMax;
     LogThis("made it compile");
+    getSets();
     loadAudio();
     std::thread musicplayer(playMusic);
     musicplayer.detach();
@@ -64,6 +65,7 @@ int main(){
     clear();
     refresh();
     endwin();
+    setSets();
     dumpAudio();
     return 0;
 }

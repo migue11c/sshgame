@@ -20,7 +20,7 @@ void playKey(const int &i){
         n = 1;
     }
     sf::Sound keybsound(gameaudio::keybuffer[n]);
-    keybsound.setVolume(30.0f);
+    keybsound.setVolume((float)clset::sets.SFXVolume);
     keybsound.play();
     sf::sleep(gameaudio::keybuffer[n].getDuration());
     keybsound.resetBuffer();
@@ -36,15 +36,14 @@ void playMusic(){
     sf::Music pla;
     std::string dir = "resources/audio/" + gameaudio::musicdir;
     pla.openFromFile(dir);
+    pla.setVolume((float)clset::sets.BGMVolume);
     pla.setLoop(true);
     pla.play();
     while (gameaudio::kill != true){
+        pla.setVolume((float)clset::sets.BGMVolume);
         std::this_thread::sleep_for(100ms);
     }
     return;
-}
-
-void loadMusic(){
 }
 
 void dumpAudio(){

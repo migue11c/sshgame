@@ -2,21 +2,40 @@
 #include <string>
 #include <vector>
 
+#include "globals.h"
 #include "player.h"
 #include "logs.h"
-using namespace std;
+
+void getSets(){
+    std::string dir = "settings";
+    std::ifstream data(dir);
+    if (data.bad()){
+        ErrLog("ofstream: settingData bad location");
+    }
+    data >> clset::sets.BGMVolume;
+    data >> clset::sets.SFXVolume;
+    data.close();
+}
+
+void setSets(){
+    std::string dir = "settings";
+    std::ofstream data(dir);
+    if (data.bad()){
+        ErrLog("ofstream: settingData bad location");
+    }
+    data << clset::sets.BGMVolume << "\n" << clset::sets.SFXVolume << "\n";
+}
 
 void getPlayerData(){
-    string dir = "users/" + player::username + ".dat";
-    ifstream data(dir);
+    std::string dir = "users/" + player::username + ".dat";
+    std::ifstream data(dir);
     if (data.bad()){
-        LogThis("bad data location");
+        ErrLog("ifstream: bad player data location");
     }
 
     getline(data, player::mydata.name);
     getline(data, player::mydata.faction);
-    data >> player::mydata.maxhp;
-    data >> player::mydata.hp;
+    data >> player::mydata.maxhp >> player::mydata.hp;
 
     int buffer; //adds data to vector
     for (int i = 0; i<5; i++){
@@ -31,13 +50,15 @@ void getPlayerData(){
     LogThis("retrieved %s.dat",player::username.c_str());
     data.close();
 }
+
 void writePlayerData(){
-    string dir = "users\\" + player::username + ".dat";
-    ofstream data(dir); //solve the binary issue for another day
-    data << player::mydata.name << "\n";
-    data << player::mydata.faction << "\n";
-    data << player::mydata.maxhp << "\n";
-    data << player::mydata.hp << "\n";
+    std::string dir = "users\\" + player::username + ".dat";
+    std::ofstream data(dir); //solve the binary issue for another day
+    if (data.bad()){
+        ErrLog("ofstream: bad player data location");
+    }
+
+    data << player::mydata.name << "\n" << player::mydata.faction << "\n" << player::mydata.maxhp << "\n" << player::mydata.hp << "\n";
     for (int i = 0; i < 5; i++){ // change this if you change amt of dice!!!
         data << player::mydata.dice[i] << " ";
     }

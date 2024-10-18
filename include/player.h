@@ -7,6 +7,9 @@
 bool login(int ymax, int xmax);
 bool auth(std::string username, std::string password); //this relies on a different username value
 //data
+
+void getSets();
+void setSets();
 void getPlayerData();
 void writePlayerData();
 void addItem(itemData it);
