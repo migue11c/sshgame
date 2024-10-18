@@ -18,7 +18,7 @@ void settingsScreen(int ymax, int xmax) {
     WINDOW* sets = newwin(10, 30, ymax/2 - 8, xmax/2 - 15);
     keypad(sets, true);
     curs_set(0);
-    std::string options[3] = {"SFX Volume","BGM Volume","Save..."};
+    std::string options[3] = {"BGM Volume","SFX Volume","Save..."};
     int choice,hl;
     hl = 0;
     while(1){
@@ -31,11 +31,23 @@ void settingsScreen(int ymax, int xmax) {
                 mvwprintw(sets, i, 0, "  [%s]",options[i].c_str());
             switch (i) {
                 case 0:
-                    mvwprintw(sets, i, getmaxx(sets)-5, "[%d]", clset::sets.SFXVolume);
+                    if (clset::sets.BGMVolume == 100)
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[Max]");
+                    else if (clset::sets.BGMVolume == 0)
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[Min]");
+                    else
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[%d%%]", clset::sets.BGMVolume);
+                    break;
                 case 1:
-                    mvwprintw(sets, i, getmaxx(sets)-5, "[%d]", clset::sets.BGMVolume);
+                    if (clset::sets.SFXVolume == 100)
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[Max]");
+                    else if (clset::sets.SFXVolume == 0)
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[Min]");
+                    else
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[%d%%]", clset::sets.SFXVolume);
+                    break;
                 default:
-                    mvwprintw(sets, i, getmaxx(sets)-5, "");
+                    break;
             }
             wattroff(sets, A_REVERSE);
 
@@ -75,6 +87,7 @@ void settingsScreen(int ymax, int xmax) {
                     default:
                         break;
                 }
+                break;
             }
             case KEY_RIGHT:{
                 switch (hl) {
@@ -91,12 +104,14 @@ void settingsScreen(int ymax, int xmax) {
                     default:
                         break;
                 }
+                break;
             }
             default: if (choice == 10 && hl == 2) {goto end;} //this goes to end regardless of the result
             //you need to write a way to do settings within the function
         }
     }
     end:
+    setSets();
     wclear(sets);
     clear();
     delwin(sets); //make sure to always refresh() after delwin and not wrefresh(win)!!!

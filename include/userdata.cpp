@@ -12,8 +12,7 @@ void getSets(){
     if (data.bad()){
         ErrLog("ofstream: settingData bad location");
     }
-    data >> clset::sets.BGMVolume;
-    data >> clset::sets.SFXVolume;
+    data >> clset::sets.BGMVolume >> clset::sets.SFXVolume;
     data.close();
 }
 
@@ -23,7 +22,7 @@ void setSets(){
     if (data.bad()){
         ErrLog("ofstream: settingData bad location");
     }
-    data << clset::sets.BGMVolume << "\n" << clset::sets.SFXVolume << "\n";
+    data << clset::sets.BGMVolume << " " << clset::sets.SFXVolume << "\n";
 }
 
 void getPlayerData(){
