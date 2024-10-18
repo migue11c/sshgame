@@ -30,6 +30,8 @@ To simplify the workflow, there will also be a camera function that has its' own
 
 To summarize, the map is being stretched and squished, and camera position will accomodate for it.
 
+the map coordinates is being accounted for the default powershell font: Consolas: 16 pixels tall and 8 pixels wide, so x coordinate will be twice as long
+
 
 enter will zoom in, backspace will zoom out
 zoom 0 will show the entire map and arrowkeys will move the camera in the direction of the keypress.
