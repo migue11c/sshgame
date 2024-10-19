@@ -14,12 +14,12 @@ next tasks:
 2. fix newline and eof when rendering with std::getline
 3. add points of interest on the map so it can render with those in the middle
   when adding points of interest, make sure that camera does not go out of bounds.
-4. settings menu with actual settings
+DONE settings menu with actual settings
 5. file checks for ifstream
-6. audio (cross platform)
+DONE audio (cross platform)
 7. segmenting the map and rendering each part seperately
   (this is so that the map segments can be animated)
-8. loading screen (multithreading)
+MOSTLY DONE loading screen (multithreading)
 
 The whole article regarding map rendering is kept as a reference if i change my mind.
 
