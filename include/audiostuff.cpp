@@ -29,8 +29,8 @@ void playKey(const int &i){
 
 void loadKey(){
     std::string dir = "resources/audio/sounds/";
-    gameaudio::keybuffer[0].loadFromFile("kb1.mp3");
-    gameaudio::keybuffer[1].loadFromFile("kb2.mp3");
+    gameaudio::keybuffer[0].loadFromFile(dir+"kb1.mp3");
+    gameaudio::keybuffer[1].loadFromFile(dir+"kb2.mp3");
 }
 
 void playMusic(){
