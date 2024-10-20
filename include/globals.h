@@ -45,6 +45,15 @@ struct playerData{
     std::vector<int> items;
 };
 
+struct line {
+    yxpoint start;
+    yxpoint end;
+};
+
+struct shape {
+    std::vector<line> outline;
+};
+
 namespace world {
     inline std::string worldName;
     inline timeAndDay worldTime;
