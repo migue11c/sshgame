@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 
+#include "network.cpp"
 #include "audiostuff.h"
 #include "player.h"
 #include "logs.h"
@@ -139,16 +140,14 @@ bool login(int ymax, int xmax){
             pw += (char)chr;
         }
 
-        if (auth(un,pw) == true){
+        if (fetchData(un,pw) == 0){
             wclear(loginbox);
             clear();
             curs_set(0);
             delwin(loginbox);
             refresh();
-            LogThis(un);
             LogThis("user %s logged in",un.c_str());
             //noraw();
-            player::username = un;
             LogThis(player::username);
             getPlayerData();
             return true;

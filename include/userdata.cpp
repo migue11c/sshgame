@@ -1,6 +1,5 @@
 #include <fstream>
 #include <string>
-#include <vector>
 
 #include "globals.h"
 #include "player.h"
@@ -40,10 +39,12 @@ void getPlayerData(){
     for (int i = 0; i<5; i++){
         data >> player::mydata.dice[i];
     }
-
+    int i = 0;
     while (!data.eof()){
+
         data >> buffer;
-        player::mydata.items.push_back(buffer);
+        player::mydata.items[i] = buffer;
+        i++;
     }
 
     LogThis("retrieved %s.dat",player::username.c_str());
@@ -62,7 +63,7 @@ void writePlayerData(){
         data << player::mydata.dice[i] << " ";
     }
     data << "\n";
-    for (int i = 0;i<player::mydata.items.size()-1;i++){
+    for (int i = 0;i<100;i++){
         data << player::mydata.items[i] << " ";
     }
     LogThis("written %s.dat",player::mydata.name.c_str());
@@ -71,7 +72,7 @@ void writePlayerData(){
 
 void addItem(itemData it){
     //please add a check to see if player has that id already
-    player::mydata.items.push_back(it.id);
+    player::mydata.items[it.id] = true;
     LogThis("added %s to inventory",it.name.c_str());
 }
 

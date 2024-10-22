@@ -166,7 +166,6 @@ int mainScreenOptions(int ymax, int xmax){
 void drawUser(){
     WINDOW* user = newwin(6, 30, 0, 0);
     refresh();
-    int *pos = player::mydata.items.data();
     for (int i = 0; i<5;i++){
         switch (i) {
             case 0:
@@ -194,7 +193,7 @@ void drawUser(){
             case 5:
                 wmove(user, 5, 0);
                 wprintw(user,"Items:");
-                for (int j = 0; j < player::mydata.items.size()-1; j++){
+                for (int j = 0; j < 100; j++){
                     wprintw(user, " %d",player::mydata.items[j]);
                 }
             default:
