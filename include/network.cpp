@@ -1,3 +1,4 @@
+#include <SFML/Config.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/Network/Packet.hpp>
 #include <SFML/Network/Socket.hpp>
@@ -5,6 +6,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
+#include <ncurses/ncurses.h>
 #include "globals.h"
 #include "logs.h"
 
@@ -21,10 +23,11 @@
 int fetchData(std::string un, std::string pw){
     int value;
     int att = 0;
-    int i = 0;
+    sf::Uint8 i = 0;
 
     std::string conf;
     sf::TcpSocket socket;
+    sf::Time timeout = sf::seconds(5);
     sf::Clock clock;
     sf::Packet packet;
 
@@ -33,7 +36,7 @@ int fetchData(std::string un, std::string pw){
         value = 2;
         return value;
     }
-    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 23);
+    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 23, timeout);
 
     if (att <= 20){
         // code goes here
