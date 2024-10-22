@@ -8,9 +8,14 @@
 #include "globals.h"
 #include "logs.h"
 
+// philosophy behind this client-server interaction is that the client ALWAYS makes requests
+// and expects a result. If the result is not sent over, a new connection is attempted.
+// server SHOULD NOT care about receiving a proper response and thread shuts down as soon
+// as the packets are send, or failed to send.
+
 // 0: logged in
 // 1: failed login
-// 2: connection error
+// 2: timed out
 // 3: sending playerData
 
 int fetchData(std::string un, std::string pw){
@@ -24,6 +29,10 @@ int fetchData(std::string un, std::string pw){
     sf::Packet packet;
 
     start:
+    if(clock.getElapsedTime() == sf::seconds(20)){
+        value = 2;
+        return value;
+    }
     sf::Socket::Status status = socket.connect("miguell.duckdns.org", 23);
 
     if (att <= 20){
@@ -72,10 +81,6 @@ int fetchData(std::string un, std::string pw){
                     packet >> player::mydata.items[l];
                 }
 
-                if (conf != "pos0"){ // failed to authenticate
-                    value = 1;
-                    break;
-                }
                 packet.clear();
                 LogThis("playerData fetched...");
                 i++;
@@ -97,10 +102,6 @@ int fetchData(std::string un, std::string pw){
 
                 // do not include maplist and itemlist, or worldtime hour
 
-                if (conf != "pos0"){ // failed to authenticate
-                    value = 1;
-                    break;
-                }
                 packet.clear();
                 LogThis("playerData fetched...");
 
