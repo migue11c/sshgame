@@ -36,7 +36,7 @@ int fetchData(std::string un, std::string pw){
         value = 2;
         return value;
     }
-    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 23, timeout);
+    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 23);
 
     if (att <= 20){
         // code goes here
