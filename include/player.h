@@ -8,6 +8,7 @@ bool login(int ymax, int xmax);
 bool auth(std::string username, std::string password); //this relies on a different username value
 //data
 
+int fetchData(std::string un, std::string pw);
 void getSets();
 void setSets();
 void getPlayerData();

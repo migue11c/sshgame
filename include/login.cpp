@@ -4,7 +4,6 @@
 #include <string>
 #include <thread>
 
-#include "network.cpp"
 #include "audiostuff.h"
 #include "player.h"
 #include "logs.h"
