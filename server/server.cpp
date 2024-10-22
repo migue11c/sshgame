@@ -13,20 +13,21 @@ int main(){
 
     sf::TcpListener listener;
 
-
     while (1){
-        sf::Packet packet;
+        //sf::Packet packet;
+        start:
         if (listener.listen(53000) != sf::Socket::Done){
-            // listener error
+            goto start;
         }
         std::cout << "listen successful\n";
         sf::TcpSocket client;
         if (listener.accept(client) != sf::Socket::Done){
-            // accept error
+            goto start;
         }
-        std::cout << "client accepted\n";
+        std::cout << client.getRemoteAddress() << " connected\n";
+        sf::Packet packet;
         if (client.receive(packet) != sf::Socket::Done){
-            // packet reception error
+            goto start;
         }
         std::string un,pw;
         sf::Uint8 check;
@@ -38,17 +39,14 @@ int main(){
             if (client.send(packet) != sf::Socket::Done){
                 goto auth;
             }
-            std::cout << "bad login\n";
+            std::cout << client.getRemoteAddress() <<" failed login auth\n";
         }
         else {
             packet << "pos0";
             if (client.send(packet) != sf::Socket::Done){
                 goto auth;
             }
-            std::cout << "correct login\n";
+            std::cout << client.getRemoteAddress() << " logged in as " << "miguell" << "\n";
         }
-
     }
-
-    return 0;
 }
