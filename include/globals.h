@@ -50,12 +50,13 @@ struct playerData{
     int maxhp;
     int hp;
     int dice[5];
-    std::vector<int> items;
+    bool items[100];
 };
 
 namespace player {
     inline playerData mydata;
     inline std::string username;
+    inline timeAndDay playerTime;
 };
 
 namespace gameaudio {
