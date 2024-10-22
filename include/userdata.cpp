@@ -7,7 +7,7 @@
 #include "logs.h"
 
 void getSets(){
-    std::string dir = "settings";
+    std::string dir = "resources/settings";
     std::ifstream data(dir);
     if (data.bad()){
         ErrLog("ofstream: settingData bad location");
@@ -17,7 +17,7 @@ void getSets(){
 }
 
 void setSets(){
-    std::string dir = "settings";
+    std::string dir = "resources/settings";
     std::ofstream data(dir);
     if (data.bad()){
         ErrLog("ofstream: settingData bad location");

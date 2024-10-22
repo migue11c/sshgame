@@ -31,14 +31,6 @@ struct mapDetails {
     std::string name;
 };
 
-namespace world {
-    inline std::string worldName;
-    inline timeAndDay worldTime;
-    inline int dangerLevel[26];
-    inline mapDetails maplist[52];
-    inline itemData itemlist[100];
-};
-
 struct settings{
     int SFXVolume;
     int BGMVolume;
@@ -53,6 +45,23 @@ struct playerData{
     bool items[100];
 };
 
+struct line {
+    yxpoint start;
+    yxpoint end;
+};
+
+struct shape {
+    std::vector<line> outline;
+};
+
+namespace world {
+    inline std::string worldName;
+    inline timeAndDay worldTime;
+    inline int dangerLevel[26];
+    inline mapDetails maplist[52];
+    inline itemData itemlist[100];
+};
+
 namespace player {
     inline playerData mydata;
     inline std::string username;
@@ -61,7 +70,7 @@ namespace player {
 
 namespace gameaudio {
     inline bool kill = false;
-    const std::string musicdir = "music/menu.ogg";
+    const std::string musicdir = "menu.ogg";
     inline sf::SoundBuffer keybuffer[2];
     inline sf::Music music;
 };

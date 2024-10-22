@@ -28,13 +28,14 @@ void playKey(const int &i){
 }
 
 void loadKey(){
-    gameaudio::keybuffer[0].loadFromFile("kb1.mp3");
-    gameaudio::keybuffer[1].loadFromFile("kb2.mp3");
+    std::string dir = "resources/audio/sounds/";
+    gameaudio::keybuffer[0].loadFromFile(dir+"kb1.mp3");
+    gameaudio::keybuffer[1].loadFromFile(dir+"kb2.mp3");
 }
 
 void playMusic(){
     sf::Music pla;
-    std::string dir = "resources/audio/" + gameaudio::musicdir;
+    std::string dir = "resources/audio/music/" + gameaudio::musicdir;
     pla.openFromFile(dir);
     pla.setVolume((float)clset::sets.BGMVolume);
     pla.setLoop(true);
