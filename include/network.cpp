@@ -76,12 +76,16 @@ int fetchData(std::string un, std::string pw){
                     goto back;
                 }
 
-                packet >> player::mydata.name >> player::mydata.faction >> player::playerTime.hour >> player::mydata.maxhp >> player::mydata.hp; // gets confirmation
+                packet >> player::mydata.name >> player::mydata.faction; //>> player::playerTime.hour >> player::mydata.maxhp >> player::mydata.hp // gets confirmation
+                sf::Uint64 buffer;
+                bool num;
                 for (int l = 0; l < 5; l++){
-                    packet >> player::mydata.dice[l];
+                    packet >> buffer;
+                    player::mydata.dice[l] = buffer;
                 }
                 for (int l = 0; l < 100; l++){
-                    packet >> player::mydata.items[l];
+                    packet >> num;
+                    player::mydata.items[l] = num;
                 }
 
                 packet.clear();
@@ -117,8 +121,6 @@ int fetchData(std::string un, std::string pw){
             }
         }
     }
-
-
     return value;
 
     back:
