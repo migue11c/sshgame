@@ -148,7 +148,7 @@ bool login(int ymax, int xmax){
             LogThis("user %s logged in",un.c_str());
             //noraw();
             LogThis(player::username);
-            getPlayerData();
+            //getPlayerData();
             return true;
         }
         else {

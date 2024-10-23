@@ -65,7 +65,6 @@ int fetchData(std::string un, std::string pw){
                 packet.clear();
                 LogThis("Auth passed...");
                 i++;
-                return 0; // THIS IS TEMPORARY PLEASE REMOVE THIS
 
                 goto back;
             }
@@ -88,6 +87,7 @@ int fetchData(std::string un, std::string pw){
                 packet.clear();
                 LogThis("playerData fetched...");
                 i++;
+                return 0; // THIS IS TEMPORARY PLEASE REMOVE THIS
 
                 goto back;
             }
