@@ -1,5 +1,6 @@
 #include <SFML/Config.hpp>
 #include <SFML/Network.hpp>
+#include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
 #include <SFML/Network/Socket.hpp>
 #include <SFML/Network/TcpSocket.hpp>
@@ -36,7 +37,8 @@ int fetchData(std::string un, std::string pw){
         value = 2;
         return value;
     }
-    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 41702);
+    sf::Socket::Status status = socket.connect(sf::IpAddress::getLocalAddress(), 53000);
+    //sf::Socket::Status status = socket.connect("miguell.duckdns.org", 41702);
 
     if (att <= 20){
         // code goes here
