@@ -1,5 +1,5 @@
-# sshgame
-tui game that isnt actually played over ssh, that was just the initial name
+# (not actually) sshgame
+tui game that isnt actually played over ssh, that was just the initial name, it will undergo changes
 
 done:
   - main and login menus
@@ -9,7 +9,6 @@ done:
   - player database
   - settings menu
   - (almost) loading screen
-
 
 next tasks:
 

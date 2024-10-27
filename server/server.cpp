@@ -45,14 +45,14 @@ int main(){
                     if (client.send(packet) != sf::Socket::Done){
                         goto auth;
                     }
-                    std::cout << client.getRemoteAddress() <<" failed login auth\n";
+                    std::cout << client.getRemoteAddress() <<" failed login auth (" << un << ", " << pw << ")\n";
                 }
                 else {
                     packet << "pos0";
                     if (client.send(packet) != sf::Socket::Done){
                         goto auth;
                     }
-                    std::cout << client.getRemoteAddress() << " logged in as " << "miguell" << "\n";
+                    std::cout << client.getRemoteAddress() << " logged in as " << un << "\n";
                 }
                 break;
             }
@@ -101,7 +101,7 @@ int main(){
                 break;
             }
             case 2:{
-
+                // this needs to be finished
                 break;
             }
             default:{

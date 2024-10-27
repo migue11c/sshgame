@@ -131,3 +131,5 @@ int fetchData(std::string un, std::string pw){
     att++;
     goto start;
 }
+
+int sendData();
