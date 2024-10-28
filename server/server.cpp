@@ -6,17 +6,15 @@
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/TcpSocket.hpp>
 
+#include <SFML/System/Time.hpp>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <csignal>
 
 // MAKE SURE TO FIRST CHECK FOR HASHED KEY
-void close(){
-    std::cout << "closing...\n";
-}
-
 bool auth(std::string username, std::string password) {
     std::ifstream list("userlist");
     std::string buffer;
@@ -33,10 +31,21 @@ bool auth(std::string username, std::string password) {
 
 int main(){
 
+    int c=0;
+    auto lam = [] (int i) { std::cout << "closing...\n"; exit(0); };
+
+    //^C
+    signal(SIGINT, lam);
+    //abort()
+    signal(SIGABRT, lam);
+    //sent by "kill" command
+    signal(SIGTERM, lam);
+    //^Z
+    //signal(SIGTSTP, lam);
+
     sf::TcpListener listener;
 
-    std::atexit(close);
-    while (1){
+    while (c<50){
         //sf::Packet packet;
         start:
         if (listener.listen(53000) != sf::Socket::Done){
@@ -49,9 +58,11 @@ int main(){
             goto start;
         }
         std::cout << client.getRemoteAddress() << " connected\n";
+        // needs to terminate connection after client refuses to send a request
 
         sf::Packet packet;
         if (client.receive(packet) != sf::Socket::Done){
+            client.disconnect();
             goto start;
         }
         std::string un,pw;
@@ -62,7 +73,7 @@ int main(){
         switch (check){
             case 0:{
                 auth:
-                if (!auth(un,pw)){ // replace this with actual un/pw checker
+                if (!auth(un,pw)){ // username/password checker
                     packet << "neg0";
                     if (client.send(packet) != sf::Socket::Done){
                         goto auth;
@@ -114,10 +125,11 @@ int main(){
                     }
                     packet << num;
                 }
-                plr:
                 player.close();
+                plr:
                 if (client.send(packet) != sf::Socket::Done){
                     goto plr;
+                    //potentially infinite loop
                 }
                 std::cout << un << " received playerData\n";
                 break;

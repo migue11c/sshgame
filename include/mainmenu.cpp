@@ -34,7 +34,7 @@ void settingsScreen(int ymax, int xmax) {
                     if (clset::sets.BGMVolume == 100)
                         mvwprintw(sets, i, getmaxx(sets)-6, "[Max]");
                     else if (clset::sets.BGMVolume == 0)
-                        mvwprintw(sets, i, getmaxx(sets)-6, "[Min]");
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[Off]");
                     else
                         mvwprintw(sets, i, getmaxx(sets)-6, "[%d%%]", clset::sets.BGMVolume);
                     break;
@@ -42,7 +42,7 @@ void settingsScreen(int ymax, int xmax) {
                     if (clset::sets.SFXVolume == 100)
                         mvwprintw(sets, i, getmaxx(sets)-6, "[Max]");
                     else if (clset::sets.SFXVolume == 0)
-                        mvwprintw(sets, i, getmaxx(sets)-6, "[Min]");
+                        mvwprintw(sets, i, getmaxx(sets)-6, "[Off]");
                     else
                         mvwprintw(sets, i, getmaxx(sets)-6, "[%d%%]", clset::sets.SFXVolume);
                     break;

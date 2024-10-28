@@ -132,4 +132,8 @@ int fetchData(std::string un, std::string pw){
     goto start;
 }
 
+// this one needs to be giga secure
+// needs to implement failsafes in case of exiting or process killing
+//
+// serverside needs to have an implementation for invalid savestate (abusing bugs), which will terminate the entire game
 int sendData();

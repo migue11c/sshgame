@@ -13,6 +13,8 @@ using namespace std;
 //bool login(int ymax, int xmax);
 //bool auth(string username, string password);
 
+//this has been moved to the server
+
 bool auth(string username, string password) {
     ifstream list("userlist");
     string buffer;
