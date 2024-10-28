@@ -12,7 +12,7 @@ done:
 
 next tasks:
 
-1. networking
+1. networking (needs a timeout and a stopwatch for testing)
 2. fix newline and eof when rendering with std::getline
 3. add points of interest on the map so it can render with those in the middle
   when adding points of interest, make sure that camera does not go out of bounds.

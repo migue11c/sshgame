@@ -14,7 +14,7 @@ using namespace std;
 //bool auth(string username, string password);
 
 bool auth(string username, string password) {
-    fstream list("userlist");
+    ifstream list("userlist");
     string buffer;
     LogThis("entered auth");
     while(list >> buffer){

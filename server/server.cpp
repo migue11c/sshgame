@@ -6,16 +6,36 @@
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/TcpSocket.hpp>
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstring>
 
 // MAKE SURE TO FIRST CHECK FOR HASHED KEY
+void close(){
+    std::cout << "closing...\n";
+}
+
+bool auth(std::string username, std::string password) {
+    std::ifstream list("userlist");
+    std::string buffer;
+    while(list >> buffer){
+        if (strcmp(username.c_str(), buffer.c_str())==0){
+            list >> buffer;
+            list.close();
+            return (strcmp(password.c_str(), buffer.c_str())==0);
+        }
+    }
+    list.close();
+    return false;
+}
 
 int main(){
 
     sf::TcpListener listener;
 
+    std::atexit(close);
     while (1){
         //sf::Packet packet;
         start:
@@ -23,11 +43,13 @@ int main(){
             goto start;
         }
         std::cout << "listen successful\n";
+
         sf::TcpSocket client;
         if (listener.accept(client) != sf::Socket::Done){
             goto start;
         }
         std::cout << client.getRemoteAddress() << " connected\n";
+
         sf::Packet packet;
         if (client.receive(packet) != sf::Socket::Done){
             goto start;
@@ -40,7 +62,7 @@ int main(){
         switch (check){
             case 0:{
                 auth:
-                if (un != "miguell" || pw != "password"){ // replace this with actual un/pw checker
+                if (!auth(un,pw)){ // replace this with actual un/pw checker
                     packet << "neg0";
                     if (client.send(packet) != sf::Socket::Done){
                         goto auth;
