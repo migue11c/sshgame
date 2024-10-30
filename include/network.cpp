@@ -110,6 +110,7 @@ int fetchData(std::string un, std::string pw){
                     packet >> world::dangerLevel[l];
                 }
 
+
                 // do not include maplist and itemlist, or worldtime hour
 
                 packet.clear();
@@ -136,4 +137,12 @@ int fetchData(std::string un, std::string pw){
 // needs to implement failsafes in case of exiting or process killing
 //
 // serverside needs to have an implementation for invalid savestate (abusing bugs), which will terminate the entire game
+//
+// Request methods need to be defined like this:
+// 1. Request method (int 0-9)
+// 2. User Hash (hash generated from username and password)
+// knowing someone's user hash is way more difficult than knowing their username and password so u cant
+// directly request for data
+
+// SaveState needs to be defined like this:
 int sendData();

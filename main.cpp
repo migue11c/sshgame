@@ -1,9 +1,11 @@
 #include <SFML/Audio/Music.hpp>
+#include <chrono>
+#include <csignal>
 #include <ncurses/ncurses.h>
 #include <string>
 #include <thread>
 #include <SFML/Audio.hpp>
-
+#include <SFML/System/Time.hpp>
 //#include "include/mainmenu.cpp"
 //#include "include/map.cpp"
 //#include "include/login.cpp"
@@ -15,6 +17,17 @@
 #include "include/player.h"
 
 int main(){
+    // exit lambda func
+    auto lam = [] (int i) {gameaudio::kill = true; printw("RAHHH"); wrefresh(stdscr); std::this_thread::sleep_for(std::chrono::milliseconds(100)); exit(0); };
+    //^C
+    signal(SIGINT, lam);
+    //abort()
+    signal(SIGABRT, lam);
+    //sent by "kill" command
+    signal(SIGTERM, lam);
+    //^Z
+    //signal(SIGTSTP, lam);
+
     //initializing
     int y,x,yMax,xMax;
     LogThis("made it compile");
@@ -48,7 +61,7 @@ int main(){
             goto start;
         }
         case 2: { //exit the game
-            return 0;
+            SIGINT;
         }
         default: { //exits the game with error
             refresh();

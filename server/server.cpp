@@ -15,6 +15,8 @@
 #include <csignal>
 
 // MAKE SURE TO FIRST CHECK FOR HASHED KEY
+
+// this func is copied over from login.cpp on the client
 bool auth(std::string username, std::string password) {
     std::ifstream list("userlist");
     std::string buffer;
