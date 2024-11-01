@@ -1,6 +1,7 @@
 #include <SFML/Audio/Listener.hpp>
 #include <SFML/Config.hpp>
 #include <SFML/Network.hpp>
+#include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
 #include <SFML/Network/Socket.hpp>
 #include <SFML/Network/TcpListener.hpp>
@@ -34,6 +35,8 @@ bool auth(std::string username, std::string password) {
 int main(){
 
     int c=0;
+
+    //closing func
     auto lam = [] (int i) { std::cout << "closing...\n"; exit(0); };
 
     //^C
@@ -53,7 +56,7 @@ int main(){
         if (listener.listen(53000) != sf::Socket::Done){
             goto start;
         }
-        std::cout << "listen successful\n";
+        std::cout << "listen successful at: " << sf::IpAddress::getLocalAddress() << "\n";
 
         sf::TcpSocket client;
         if (listener.accept(client) != sf::Socket::Done){
