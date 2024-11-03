@@ -136,68 +136,68 @@ int main(){
     scale = 0.1;
     cpos.x = 10;
     cpos.y = 12;
-  //for (int i=0;i<16;i++){
-  //    wmove(stdscr, i, 0);
-  //    wprintw(stdscr, "x:%f, y: %f", city.points[i].x, city.points[i].y);
-  //}
-    int a;
-    while(1){
-        clear();
-        drawCity(city);
-        refresh();
-        a = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
-        if (a == KEY_UP){
-            for (int i = 0; i<5; i++){
-                cpos.y = (cpos.y*scale - 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == KEY_DOWN){
-            for (int i = 0; i<5; i++){
-                cpos.y = (cpos.y*scale + 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == KEY_LEFT){
-            for (int i = 0; i<5; i++){
-                cpos.x = (cpos.x*scale - 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == KEY_RIGHT){
-            for (int i = 0; i<5; i++){
-                cpos.x = (cpos.x*scale + 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        // this manually scales the display (this will need to be animated)
-        if (a == 'w'){
-            for (int i = 0; i<5; i++){
-                scale += 0.01;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == 'd'){
-            if (scale - 0.05 > 0.1){
-                for (int i = 0; i<5; i++){
-                    scale -= 0.01;
-                    drawCity(city);
-                    refresh();
-                    std::this_thread::sleep_for(std::chrono::milliseconds(25));
-                }
-            }
-        }
+    for (int i=0;i<29;i++){
+        wmove(stdscr, i, 0);
+        wprintw(stdscr, "x:%f, y: %f", city.points[i].x, city.points[i].y);
     }
+  //int a;
+  //while(1){
+  //    clear();
+  //    drawCity(city);
+  //    refresh();
+  //    a = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
+  //    if (a == KEY_UP){
+  //        for (int i = 0; i<5; i++){
+  //            cpos.y = (cpos.y*scale - 2)/scale;
+  //            drawCity(city);
+  //            refresh();
+  //            std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  //        }
+  //    }
+  //    if (a == KEY_DOWN){
+  //        for (int i = 0; i<5; i++){
+  //            cpos.y = (cpos.y*scale + 2)/scale;
+  //            drawCity(city);
+  //            refresh();
+  //            std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  //        }
+  //    }
+  //    if (a == KEY_LEFT){
+  //        for (int i = 0; i<5; i++){
+  //            cpos.x = (cpos.x*scale - 2)/scale;
+  //            drawCity(city);
+  //            refresh();
+  //            std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  //        }
+  //    }
+  //    if (a == KEY_RIGHT){
+  //        for (int i = 0; i<5; i++){
+  //            cpos.x = (cpos.x*scale + 2)/scale;
+  //            drawCity(city);
+  //            refresh();
+  //            std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  //        }
+  //    }
+  //    // this manually scales the display (this will need to be animated)
+  //    if (a == 'w'){
+  //        for (int i = 0; i<5; i++){
+  //            scale += 0.01;
+  //            drawCity(city);
+  //            refresh();
+  //            std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  //        }
+  //    }
+  //    if (a == 'd'){
+  //        if (scale - 0.05 > 0.1){
+  //            for (int i = 0; i<5; i++){
+  //                scale -= 0.01;
+  //                drawCity(city);
+  //                refresh();
+  //                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  //            }
+  //        }
+  //    }
+  //}
     //drawVector(city.points[0].y+0, city.points[0].x+0, city.points[1].y+0, city.points[1].x+0, 1, 0);
     //animVector();
     return 0;
