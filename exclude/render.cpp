@@ -11,9 +11,10 @@ struct vertex{
 };
 
 struct map{
-    vertex points[16];
+    vertex points[29];
 };
 
+inline vertex cpos={0,0};
 inline int offs=0;
 inline double scale=1;
 
@@ -84,6 +85,8 @@ void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
     }
 }
 
+
+// work on this later
 void animVector(){
     float i=0;
     bool done = false;
@@ -105,7 +108,7 @@ void animVector(){
 map getMap(){
     map city;
     std::ifstream in("map");
-    for (int i=0;i<16;i++){
+    for (int i=0;i<29;i++){
         in >> city.points[i].x >> city.points[i].y;
     }
     return city;
@@ -114,9 +117,10 @@ map getMap(){
 void drawCity(map city) {
     int maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
-    for (int i = 0; i<16; i++){
-        drawVector(scale*(city.points[i].y+20), scale*(city.points[i].x+32),
-            scale*(city.points[(i+1)%16].y+20), scale*(city.points[(i+1)%16].x+32), 1, 0);
+    for (int i = 0; i<29; i++){ //draws each segment to scale and with camera
+        // warning: this needs to be centered
+        drawVector(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x),
+            scale*(city.points[(i+1)%29].y+0-cpos.y), scale*(city.points[(i+1)%29].x+0-cpos.x), 1, 0);
     }
 }
 
@@ -124,16 +128,47 @@ int main(){
     map city = getMap();
     initscr();
     noecho();
+    keypad(stdscr, true);
     curs_set(0);
-    scale = 1.4;
+    scale = 0.1;
+    cpos.x = 10;
+    cpos.y = 12;
   //for (int i=0;i<16;i++){
   //    wmove(stdscr, i, 0);
   //    wprintw(stdscr, "x:%f, y: %f", city.points[i].x, city.points[i].y);
   //}
-    drawCity(city);
-    //drawVector(city.points[0].y+20, city.points[0].x+30, city.points[1].y+20, city.points[1].x+30, 1, 0);
-    refresh();
-    getch();
+    int a;
+    while(1){
+        clear();
+        drawCity(city);
+        for (int i = 0; i<29;i++){
+            mvprintw(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x), "%d",i+1);
+        }
+        refresh();
+        a = getch();
+        if (a == KEY_UP){
+            cpos.y = (cpos.y*scale - 1)/scale;
+        }
+        if (a == KEY_DOWN){
+            cpos.y = (cpos.y*scale + 1)/scale;
+        }
+        if (a == KEY_LEFT){
+            cpos.x = (cpos.x*scale - 1)/scale;
+        }
+        if (a == KEY_RIGHT){
+            cpos.x = (cpos.x*scale + 1)/scale;
+        }
+        if (a == 'w'){
+            scale += 0.05;
+        }
+        if (a == 'd'){
+            scale -= 0.05;
+            if (scale <= 0.1){
+                scale = 0.1;
+            }
+        }
+    }
+    //drawVector(city.points[0].y+0, city.points[0].x+0, city.points[1].y+0, city.points[1].x+0, 1, 0);
     //animVector();
     return 0;
 }
