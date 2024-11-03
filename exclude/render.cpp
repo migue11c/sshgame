@@ -122,6 +122,9 @@ void drawCity(map city) {
         drawVector(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x),
             scale*(city.points[(i+1)%29].y+0-cpos.y), scale*(city.points[(i+1)%29].x+0-cpos.x), 1, 0);
     }
+    for (int i = 0; i<29;i++){
+        mvprintw(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x), "%d",i+1);
+    }
 }
 
 int main(){
@@ -141,30 +144,57 @@ int main(){
     while(1){
         clear();
         drawCity(city);
-        for (int i = 0; i<29;i++){
-            mvprintw(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x), "%d",i+1);
-        }
         refresh();
-        a = getch();
+        a = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
         if (a == KEY_UP){
-            cpos.y = (cpos.y*scale - 1)/scale;
+            for (int i = 0; i<5; i++){
+                cpos.y = (cpos.y*scale - 2)/scale;
+                drawCity(city);
+                refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+            }
         }
         if (a == KEY_DOWN){
-            cpos.y = (cpos.y*scale + 1)/scale;
+            for (int i = 0; i<5; i++){
+                cpos.y = (cpos.y*scale + 2)/scale;
+                drawCity(city);
+                refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+            }
         }
         if (a == KEY_LEFT){
-            cpos.x = (cpos.x*scale - 1)/scale;
+            for (int i = 0; i<5; i++){
+                cpos.x = (cpos.x*scale - 2)/scale;
+                drawCity(city);
+                refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+            }
         }
         if (a == KEY_RIGHT){
-            cpos.x = (cpos.x*scale + 1)/scale;
+            for (int i = 0; i<5; i++){
+                cpos.x = (cpos.x*scale + 2)/scale;
+                drawCity(city);
+                refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+            }
         }
+        // this manually scales the display (this will need to be animated)
         if (a == 'w'){
-            scale += 0.05;
+            for (int i = 0; i<5; i++){
+                scale += 0.01;
+                drawCity(city);
+                refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+            }
         }
         if (a == 'd'){
-            scale -= 0.05;
-            if (scale <= 0.1){
-                scale = 0.1;
+            if (scale - 0.05 > 0.1){
+                for (int i = 0; i<5; i++){
+                    scale -= 0.01;
+                    drawCity(city);
+                    refresh();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+                }
             }
         }
     }
