@@ -10,7 +10,7 @@
 using namespace std;
 
 void wait() {
-    this_thread::sleep_for(chrono::milliseconds(25));
+    this_thread::sleep_for(chrono::milliseconds(200));
 }
 
 void textAnimation(string text, int y, int x){
@@ -67,9 +67,10 @@ void animVector(){
     while (1){
         clear();
         drawVector(7, 5, 7, 20, 3, i);
-        drawVector(7, 20, 17, 22, 3, i);
-        drawVector(17, 22, 14, 8, 3, i);
-        drawVector(14, 8, 7, 5, 3, i);
+        drawVector(7, 20, 17+cos(i)*5, 22+sin(i)*5, 3, i/4);
+        drawVector(17+cos(i)*5, 22+sin(i)*5, 14, 8, 3, i/4);
+        mvprintw(0, 0, "y: %f, x: %f",(17+cos(i)*5),(22+cos(i)*5));
+        drawVector(14, 8, 7, 5, 3, i/4);
         wrefresh(stdscr);
         wait();
         i++;

@@ -41,7 +41,7 @@ int main(){
     noecho();
     cbreak();
     curs_set(0);
-
+    animVector();
     //draw intro animation here
 
     //animVector();
