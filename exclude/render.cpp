@@ -5,13 +5,20 @@
 #include <cstdlib>
 #include <thread>
 #include <chrono>
+#include <vector>
 
 struct vertex{
     double y,x;
 };
 
 struct map{
-    vertex points[29];
+    vertex points[30];
+};
+struct shell{
+    vertex points[70];
+};
+struct wall{
+    std::vector<vertex> points;
 };
 
 inline vertex cpos={0,0};
@@ -32,22 +39,24 @@ void wait() {
 
 void textAnimation(std::string text, int y, int x){
     WINDOW* anim = newwin(1, text.length()+4, y, x);
-    curs_set(2);
+  //curs_set(2);
     std::string buffer;
     for (int i = 0;i<text.length();i++){
         wmove(anim,0, ((text.length()+4)/2) - 1 - i/2);
         buffer += text[i];
-        wprintw(anim,"[%s]",buffer.c_str());
+        if (x>=0 && y>=0 && x<=getmaxx(stdscr) && y<=getmaxy(stdscr)){
+            wprintw(anim,"[%s]",buffer.c_str());
+        }
         wrefresh(anim);
         wait();
     }
-    curs_set(0);
-    //wclear(anim); //make sure to always wrefresh after you want to show something
+  //curs_set(0);
+  //wclear(anim); //make sure to always wrefresh after you want to show something
     delwin(anim);
-    refresh();
+  //refresh();
 }
 
-void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
+void drawVector(int sty, int stx, int finy, int finx, int div, int offs){ // needs to NOT wprintw when invalid position
     int dy = abs(finy - sty);
     int sy = sty < finy ? 1 : -1;
     int dx = abs(finx - stx);
@@ -55,14 +64,11 @@ void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
     int err = (dx > dy ? dx : -dy)/2, e2;
     int i = 0;
     while(1){
-        if (sty>=0 || stx>=0 || sty<=getmaxy(stdscr) || stx<=getmaxx(stdscr)){
-           	wmove(stdscr, sty, stx);
-        }
-        else {
-            goto end;
-        }
-        if ((i+offs)%div == 0){
-            wprintw(stdscr, "#");
+       	wmove(stdscr, sty, stx);
+        if (sty>=0 && stx>=0 && sty<=getmaxy(stdscr) && stx<=getmaxx(stdscr)){
+            if ((i+offs)%div == 0 ){
+                wprintw(stdscr, "#");
+            }
         }
 
         if (stx==finx && sty==finy){
@@ -85,7 +91,6 @@ void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
     }
 }
 
-
 // work on this later
 void animVector(){
     float i=0;
@@ -105,10 +110,33 @@ void animVector(){
     done = true;
 }
 
+//this is temporary and needs to be replaced
+shell getShell(){
+    shell dist;
+    std::ifstream in("walls");
+    for (int i=0;i<70;i++){
+        in >> dist.points[i].x >> dist.points[i].y;
+    }
+    return dist;
+}
+
+void drawShell(shell dist){
+    int maxy,maxx;
+    getmaxyx(stdscr, maxy, maxx);
+    for (int i = 0; i<69; i++){ //draws each segment to scale and with camera
+        // warning: this needs to be centered
+        drawVector(scale*(dist.points[i].y+0-cpos.y), scale*(dist.points[i].x+0-cpos.x),
+            scale*(dist.points[(i+1)].y+0-cpos.y), scale*(dist.points[(i+1)].x+0-cpos.x), 1, 0);
+    }
+    for (int i = 0; i<70;i++){
+        mvprintw(scale*(dist.points[i].y+0-cpos.y), scale*(dist.points[i].x+0-cpos.x), "%d",i+1);
+    }
+}
+
 map getMap(){
     map city;
     std::ifstream in("map");
-    for (int i=0;i<29;i++){
+    for (int i=0;i<30;i++){
         in >> city.points[i].x >> city.points[i].y;
     }
     return city;
@@ -117,17 +145,18 @@ map getMap(){
 void drawCity(map city) {
     int maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
-    for (int i = 0; i<29; i++){ //draws each segment to scale and with camera
+    for (int i = 0; i<30; i++){ //draws each segment to scale and with camera
         // warning: this needs to be centered
         drawVector(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x),
-            scale*(city.points[(i+1)%29].y+0-cpos.y), scale*(city.points[(i+1)%29].x+0-cpos.x), 1, 0);
+            scale*(city.points[(i+1)%30].y+0-cpos.y), scale*(city.points[(i+1)%30].x+0-cpos.x), 1, 0);
     }
-    for (int i = 0; i<29;i++){
+    for (int i = 0; i<30;i++){
         mvprintw(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x), "%d",i+1);
     }
 }
 
-int main(){
+void cityrender(){
+    shell dist = getShell();
     map city = getMap();
     initscr();
     noecho();
@@ -142,64 +171,100 @@ int main(){
   //}
   //getch();
     int a;
-    while(1){
+    while(1){ // the animations here are linear. find a way to add a bezier curve to them
         clear();
         drawCity(city);
+        if (scale >= 0.25){
+            drawShell(dist);
+        }
         refresh();
+        textAnimation("The City", scale*(94.044-cpos.y), scale*(230.273-cpos.x)-4); // this does not work
+        ch:
         a = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
-        if (a == KEY_UP){
-            for (int i = 0; i<5; i++){
-                cpos.y = (cpos.y*scale - 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == KEY_DOWN){
-            for (int i = 0; i<5; i++){
-                cpos.y = (cpos.y*scale + 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == KEY_LEFT){
-            for (int i = 0; i<5; i++){
-                cpos.x = (cpos.x*scale - 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == KEY_RIGHT){
-            for (int i = 0; i<5; i++){
-                cpos.x = (cpos.x*scale + 2)/scale;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        // this manually scales the display (this will need to be animated)
-        if (a == 'w'){
-            for (int i = 0; i<5; i++){
-                scale += 0.01;
-                drawCity(city);
-                refresh();
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
-            }
-        }
-        if (a == 'd'){
-            if (scale - 0.05 > 0.1){
+        switch (a) {
+            case KEY_UP:{
                 for (int i = 0; i<5; i++){
-                    scale -= 0.01;
+                    cpos.y = (cpos.y*scale - 2)/scale;
                     drawCity(city);
+                    if (scale >= 0.25){
+                        drawShell(dist);
+                    }
                     refresh();
-                    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+                    wait();
                 }
+                break;
+            }
+            case KEY_DOWN:{
+                for (int i = 0; i<5; i++){
+                    cpos.y = (cpos.y*scale + 2)/scale;
+                    drawCity(city);
+                    if (scale >= 0.25){
+                        drawShell(dist);
+                    }
+                    refresh();
+                    wait();
+                }
+                break;
+            }
+            case KEY_LEFT:{
+                for (int i = 0; i<5; i++){
+                    cpos.x = (cpos.x*scale - 2)/scale;
+                    drawCity(city);
+                    if (scale >= 0.25){
+                        drawShell(dist);
+                    }
+                    refresh();
+                    wait();
+                }
+                break;
+            }
+            case KEY_RIGHT:{
+                for (int i = 0; i<5; i++){
+                    cpos.x = (cpos.x*scale + 2)/scale;
+                    drawCity(city);
+                    if (scale >= 0.25){
+                        drawShell(dist);
+                    }
+                    refresh();
+                    wait();
+                }
+                break;
+            }
+            case 'w':{
+                for (int i = 0; i<5; i++){
+                    scale += 0.01;
+                    drawCity(city);
+                    if (scale >= 0.25){
+                        drawShell(dist);
+                    }
+                    refresh();
+                    wait();
+                }
+                break;
+            }
+            case 'd':{
+                if (scale - 0.05 > 0.05){
+                    for (int i = 0; i<5; i++){
+                        scale -= 0.01;
+                        drawCity(city);
+                        if (scale >= 0.25){
+                            drawShell(dist);
+                        }
+                        refresh();
+                        wait();
+                    }
+                }
+                break;
+            }
+            default:{
+                goto ch;
             }
         }
     }
     //drawVector(city.points[0].y+0, city.points[0].x+0, city.points[1].y+0, city.points[1].x+0, 1, 0);
     //animVector();
+}
+int main(){
+    cityrender();
     return 0;
 }
