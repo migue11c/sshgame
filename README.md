@@ -3,22 +3,22 @@ tui game that isnt actually played over ssh, that was just the initial name, it 
 
 done:
   - main and login menus
-  - basic map rendering
   - auth system (without hash)
   - centered text animatin
   - player database
   - settings menu
   - (almost) loading screen
+  - vector rendering and scaling
 
 next tasks:
 
-1. networking (needs a timeout and a stopwatch for testing)
-2. fix newline and eof when rendering with std::getline
-3. add points of interest on the map so it can render with those in the middle
-  when adding points of interest, make sure that camera does not go out of bounds.
-4. file checks for ifstream
-5. segmenting the map and rendering each part seperately
-  (this is so that the map segments can be animated)
+1. networking (almost, needs a timeout and a stopwatch for testing, also needs method for sending save data)
+2. polished raster rendering with controls
+3. file checks for ifstream (i VERY LIKELY won't need this, except for backup save)
+4. selective map controls for city map
+5. dialogue system (with checks)
+6. combat system
+7. item system (job is started but needs more work)
 
 The whole article regarding map rendering is kept as a reference if i change my mind.
 

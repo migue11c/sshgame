@@ -23,7 +23,6 @@ struct wall{
 
 inline vertex cpos={0,0};
 inline int offs=0;
-inline double scale=1;
 
 void refreshTimer(bool done) {
     while (!done) {
@@ -118,7 +117,7 @@ shell getShell(){
     return dist;
 }
 
-void drawShell(shell dist){
+void drawShell(shell dist, double scale){
     float maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
     for (int i = 0; i<69; i++){ //draws each segment to scale and with camera
@@ -142,7 +141,7 @@ map getMap(){
     return city;
 }
 
-void drawCity(map city) {
+void drawCity(map city, double scale) {
     float maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
     for (int i = 0; i<30; i++){ //draws each segment to scale and with camera
@@ -160,6 +159,10 @@ void drawCity(map city) {
     }
 }
 
+void drawPos(vertex cam, double scale){
+    mvwprintw(stdscr,0,0, "x = %f; y = %f; scale = %f",cam.x,cam.y,scale);
+}
+
 void cityrender(){
     shell dist = getShell();
     map city = getMap();
@@ -167,31 +170,33 @@ void cityrender(){
     noecho();
     keypad(stdscr, true);
     curs_set(0);
-    scale = 0.1;
-    cpos.x = 230;
+    int sc=0;
+    double scale = 0.2;
+    cpos.x = 330;
     cpos.y = 94;
   //for (int i=0;i<29;i++){
   //    wmove(stdscr, i, 0);
   //    wprintw(stdscr, "x:%f, y: %f", city.points[i].x, city.points[i].y);
   //}
   //getch();
-    int a;
+    int inp;
     float maxx,maxy;
     getmaxyx(stdscr, maxy, maxx);
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
         clear();
-        drawCity(city);
+        drawCity(city,scale);
         if (scale >= 0.25){
-            drawShell(dist);
+            drawShell(dist, scale);
         }
+        drawPos(cpos, scale);
         refresh();
         vertex cit = {94.044,230.273};
         if (scale <= 0.25){
             textAnimation("The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4); // this does not work
         }
         ch:
-        a = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
-        switch (a) {
+        //inp = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
+        switch (getch()) {
             case KEY_UP:{
                 for (int i = 0; i<5; i++){
                     cpos.y = (cpos.y*scale - 2)/scale;
@@ -241,29 +246,71 @@ void cityrender(){
                 break;
             }
 
-            //SCALE NEEDS TO BE DONE IN 3 STEPS
+            //SCALE NEEDS TO BE DONE IN 3 STEPS, STEP 3 NEEDS TO CHECK FOR NODE
             case 'w':{
-                for (int i = 0; i<5; i++){
-                    scale += 0.01;
-                  //drawCity(city);
-                  //if (scale >= 0.25){
-                  //    drawShell(dist);
-                  //}
-                  //refresh();
-                  //wait();
+                switch (sc){
+                    case 0:{
+                        for (int i = 0; i<5; i++){
+                            scale += 0.05;
+                            drawCity(city,scale);
+                            if (scale >= 0.25){
+                                drawShell(dist,scale);
+                            }
+                            refresh();
+                            wait();
+                        }
+                        sc++;
+                        break;
+                    }
+                    case 1:{
+                        for (int i = 0; i<5; i++){
+                            scale += 0.11;
+                            drawCity(city,scale);
+                            if (scale >= 0.25){
+                                drawShell(dist,scale);
+                            }
+                            refresh();
+                            wait();
+                        }
+                        sc++;
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
                 }
                 break;
             }
             case 'd':{
-                if (scale - 0.05 > 0.05){
-                    for (int i = 0; i<5; i++){
-                        scale -= 0.01;
-                      //drawCity(city);
-                      //if (scale >= 0.25){
-                      //    drawShell(dist);
-                      //}
-                      //refresh();
-                      //wait();
+                switch (sc){
+                    case 1:{
+                        for (int i = 0; i<5; i++){
+                            scale -= 0.05;
+                            drawCity(city,scale);
+                            if (scale >= 0.25){
+                                drawShell(dist,scale);
+                            }
+                            refresh();
+                            wait();
+                        }
+                        sc--;
+                        break;
+                    }
+                    case 2:{
+                        for (int i = 0; i<5; i++){
+                            scale -= 0.11;
+                            drawCity(city,scale);
+                            if (scale >= 0.25){
+                                drawShell(dist,scale);
+                            }
+                            refresh();
+                            wait();
+                        }
+                        sc--;
+                        break;
+                    }
+                    default:{
+                        break;
                     }
                 }
                 break;
