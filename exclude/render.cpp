@@ -44,7 +44,7 @@ void textAnimation(std::string text, int y, int x){
     for (int i = 0;i<text.length();i++){
         wmove(anim,0, ((text.length()+4)/2) - 1 - i/2);
         buffer += text[i];
-        if (x>=0 && y>=0 && x<=getmaxx(stdscr) && y<=getmaxy(stdscr)){
+        if (x>=0 && y>=0 && x<getmaxx(stdscr) && y<getmaxy(stdscr)){
             wprintw(anim,"[%s]",buffer.c_str());
         }
         wrefresh(anim);
@@ -65,10 +65,8 @@ void drawVector(int sty, int stx, int finy, int finx, int div, int offs){ // nee
     int i = 0;
     while(1){
        	wmove(stdscr, sty, stx);
-        if (sty>=0 && stx>=0 && sty<=getmaxy(stdscr) && stx<=getmaxx(stdscr)){
-            if ((i+offs)%div == 0 ){
-                wprintw(stdscr, "#");
-            }
+        if (sty>=0 && stx>=0 && sty<getmaxy(stdscr) && stx<getmaxx(stdscr) && (i+offs)%div == 0){
+            wprintw(stdscr, "#");
         }
 
         if (stx==finx && sty==finy){
@@ -121,15 +119,17 @@ shell getShell(){
 }
 
 void drawShell(shell dist){
-    int maxy,maxx;
+    float maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
     for (int i = 0; i<69; i++){ //draws each segment to scale and with camera
-        // warning: this needs to be centered
-        drawVector(scale*(dist.points[i].y+0-cpos.y), scale*(dist.points[i].x+0-cpos.x),
-            scale*(dist.points[(i+1)].y+0-cpos.y), scale*(dist.points[(i+1)].x+0-cpos.x), 1, 0);
+        if (maxy/2+scale*(dist.points[i].y-cpos.y) >= 0 || maxx/2+scale*(dist.points[i].x-cpos.x) >= 0 ||
+                maxy/2+scale*(dist.points[(i+1)].y-cpos.y) < maxy || maxx/2+scale*(dist.points[(i+1)].x-cpos.x) < maxx){
+        }
+        drawVector(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x),
+            maxy/2+scale*(dist.points[(i+1)].y-cpos.y), maxx/2+scale*(dist.points[(i+1)].x-cpos.x), 1, 0);
     }
-    for (int i = 0; i<70;i++){
-        mvprintw(scale*(dist.points[i].y+0-cpos.y), scale*(dist.points[i].x+0-cpos.x), "%d",i+1);
+    for (int i = 0; i<70;i++){ // this needs to be removed on release
+        mvprintw(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x), "%d",i+1);
     }
 }
 
@@ -143,15 +143,20 @@ map getMap(){
 }
 
 void drawCity(map city) {
-    int maxy,maxx;
+    float maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
     for (int i = 0; i<30; i++){ //draws each segment to scale and with camera
-        // warning: this needs to be centered
-        drawVector(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x),
-            scale*(city.points[(i+1)%30].y+0-cpos.y), scale*(city.points[(i+1)%30].x+0-cpos.x), 1, 0);
+        if (maxy/2+scale*(city.points[i].y-cpos.y) >=0 || maxx/2+scale*(city.points[i].x-cpos.x >= 0) ||
+            maxy/2+scale*(city.points[(i+1)%30].y-cpos.y) < maxy || maxx/2+scale*(city.points[(i+1)%30].x-cpos.x) < maxx){
+                drawVector(maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x),
+                    maxy/2+scale*(city.points[(i+1)%30].y-cpos.y), maxx/2+scale*(city.points[(i+1)%30].x-cpos.x), 1, 0);
+            }
     }
-    for (int i = 0; i<30;i++){
-        mvprintw(scale*(city.points[i].y+0-cpos.y), scale*(city.points[i].x+0-cpos.x), "%d",i+1);
+    for (int i = 0; i<30;i++){ // remove on release
+        if (maxy/2+scale*(city.points[i].y-cpos.y) >= 0 && maxx/2+scale*(city.points[i].x-cpos.x >= 0) &&
+            maxy/2+scale*(city.points[i].y-cpos.y) < maxy && maxx/2+scale*(city.points[i].x-cpos.x < maxx)){
+                mvprintw(maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x), "%d",i+1);
+            }
     }
 }
 
@@ -163,14 +168,16 @@ void cityrender(){
     keypad(stdscr, true);
     curs_set(0);
     scale = 0.1;
-    cpos.x = 10;
-    cpos.y = 12;
+    cpos.x = 230;
+    cpos.y = 94;
   //for (int i=0;i<29;i++){
   //    wmove(stdscr, i, 0);
   //    wprintw(stdscr, "x:%f, y: %f", city.points[i].x, city.points[i].y);
   //}
   //getch();
     int a;
+    float maxx,maxy;
+    getmaxyx(stdscr, maxy, maxx);
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
         clear();
         drawCity(city);
@@ -178,67 +185,72 @@ void cityrender(){
             drawShell(dist);
         }
         refresh();
-        textAnimation("The City", scale*(94.044-cpos.y), scale*(230.273-cpos.x)-4); // this does not work
+        vertex cit = {94.044,230.273};
+        if (scale <= 0.25){
+            textAnimation("The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4); // this does not work
+        }
         ch:
         a = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
         switch (a) {
             case KEY_UP:{
                 for (int i = 0; i<5; i++){
                     cpos.y = (cpos.y*scale - 2)/scale;
-                    drawCity(city);
-                    if (scale >= 0.25){
-                        drawShell(dist);
-                    }
-                    refresh();
-                    wait();
+                  //drawCity(city);
+                  //if (scale >= 0.25){
+                  //    drawShell(dist);
+                  //}
+                  //refresh();
+                  //wait();
                 }
                 break;
             }
             case KEY_DOWN:{
                 for (int i = 0; i<5; i++){
                     cpos.y = (cpos.y*scale + 2)/scale;
-                    drawCity(city);
-                    if (scale >= 0.25){
-                        drawShell(dist);
-                    }
-                    refresh();
-                    wait();
+                  //drawCity(city);
+                  //if (scale >= 0.25){
+                  //    drawShell(dist);
+                  //}
+                  //refresh();
+                  //wait();
                 }
                 break;
             }
             case KEY_LEFT:{
                 for (int i = 0; i<5; i++){
                     cpos.x = (cpos.x*scale - 2)/scale;
-                    drawCity(city);
-                    if (scale >= 0.25){
-                        drawShell(dist);
-                    }
-                    refresh();
-                    wait();
+                  //drawCity(city);
+                  //if (scale >= 0.25){
+                  //    drawShell(dist);
+                  //}
+                  //refresh();
+                  //wait();
                 }
                 break;
             }
             case KEY_RIGHT:{
                 for (int i = 0; i<5; i++){
                     cpos.x = (cpos.x*scale + 2)/scale;
-                    drawCity(city);
-                    if (scale >= 0.25){
-                        drawShell(dist);
-                    }
-                    refresh();
-                    wait();
+                  //drawCity(city);
+                  //if (scale >= 0.25){
+                  //    drawShell(dist);
+                  //}
+                  //refresh();
+                  //wait();
                 }
                 break;
             }
+
+            //SCALE NEEDS TO BE DONE IN 3 STEPS
             case 'w':{
                 for (int i = 0; i<5; i++){
                     scale += 0.01;
-                    drawCity(city);
-                    if (scale >= 0.25){
-                        drawShell(dist);
-                    }
-                    refresh();
-                    wait();
+                  //drawCity(city);
+                  //if (scale >= 0.25){
+                  //    drawShell(dist);
+                  //}
+                  //refresh();
+                  //wait();
                 }
                 break;
             }
@@ -246,12 +258,12 @@ void cityrender(){
                 if (scale - 0.05 > 0.05){
                     for (int i = 0; i<5; i++){
                         scale -= 0.01;
-                        drawCity(city);
-                        if (scale >= 0.25){
-                            drawShell(dist);
-                        }
-                        refresh();
-                        wait();
+                      //drawCity(city);
+                      //if (scale >= 0.25){
+                      //    drawShell(dist);
+                      //}
+                      //refresh();
+                      //wait();
                     }
                 }
                 break;
