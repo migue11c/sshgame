@@ -221,6 +221,8 @@ void drawPoi(std::vector<vertex> poi,double scale){
     }
 }
 
+
+//DRAWPOI IS NOT IMPLEMENTED FOR NAMES, IT ALSO HAS WREFRESH FUNCTION, PLEASE KEEP THAT IN MIND
 void cityrender(){
     shell dist = getShell();
     std::vector<vertex> poi = getPoi();
