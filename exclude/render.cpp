@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <fstream>
+#include <iterator>
 #include <ncurses/ncurses.h>
 #include <string>
 #include <cmath>
@@ -11,7 +13,7 @@ struct vertex{
     double y,x;
 };
 
-struct map{
+struct map{ //these two are practically the same, there is no reason for them to exist
     vertex points[30];
 };
 struct shell{
@@ -163,8 +165,25 @@ void drawPos(vertex cam, double scale){
     mvwprintw(stdscr,0,0, "x = %f; y = %f; scale = %f",cam.x,cam.y,scale);
 }
 
+std::vector<vertex> getPoi(){
+    std::vector<vertex> poi;
+    poi.push_back({94,240});
+    poi.push_back({64,230});
+    poi.push_back({84,200});
+    poi.push_back({114,170});
+    return poi;
+}
+void drawPoi(std::vector<vertex> poi,double scale){
+    float maxx,maxy;
+    getmaxyx(stdscr, maxy, maxx);
+    for (int i=0; i<poi.size(); i++){
+        mvwprintw(stdscr, maxy/2+scale*(poi[i].y-cpos.y), maxx/2+scale*(poi[i].x-cpos.x)-1, "[x]");
+    }
+}
+
 void cityrender(){
     shell dist = getShell();
+    std::vector<vertex> poi = getPoi();
     map city = getMap();
     initscr();
     noecho();
@@ -172,13 +191,7 @@ void cityrender(){
     curs_set(0);
     int sc=0;
     double scale = 0.2;
-    cpos.x = 330;
-    cpos.y = 94;
-  //for (int i=0;i<29;i++){
-  //    wmove(stdscr, i, 0);
-  //    wprintw(stdscr, "x:%f, y: %f", city.points[i].x, city.points[i].y);
-  //}
-  //getch();
+    cpos = poi[0];
     int inp;
     float maxx,maxy;
     getmaxyx(stdscr, maxy, maxx);
@@ -189,6 +202,7 @@ void cityrender(){
             drawShell(dist, scale);
         }
         drawPos(cpos, scale);
+        drawPoi(poi, scale);
         refresh();
         vertex cit = {94.044,230.273};
         if (scale <= 0.25){
@@ -196,52 +210,68 @@ void cityrender(){
         }
         ch:
         //inp = getch(); // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
-        switch (getch()) {
+        switch (getch()) { // please work on the dist method. it doesn't work properly
             case KEY_UP:{
-                for (int i = 0; i<5; i++){
-                    cpos.y = (cpos.y*scale - 2)/scale;
-                  //drawCity(city);
-                  //if (scale >= 0.25){
-                  //    drawShell(dist);
-                  //}
-                  //refresh();
-                  //wait();
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if ((poi[i].x != cpos.x || poi[i].y != cpos.y) && cpos.y-poi[i].y <= std::abs(cpos.x-poi[i].x)){
+                        dist.push_back(cpos.y-poi[i].y);
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it];
                 }
                 break;
             }
             case KEY_DOWN:{
-                for (int i = 0; i<5; i++){
-                    cpos.y = (cpos.y*scale + 2)/scale;
-                  //drawCity(city);
-                  //if (scale >= 0.25){
-                  //    drawShell(dist);
-                  //}
-                  //refresh();
-                  //wait();
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if ((poi[i].x != cpos.x || poi[i].y != cpos.y) && cpos.y-poi[i].y >= std::abs(cpos.x-poi[i].x)){
+                        dist.push_back(cpos.y-poi[i].y);
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it];
                 }
                 break;
             }
             case KEY_LEFT:{
-                for (int i = 0; i<5; i++){
-                    cpos.x = (cpos.x*scale - 2)/scale;
-                  //drawCity(city);
-                  //if (scale >= 0.25){
-                  //    drawShell(dist);
-                  //}
-                  //refresh();
-                  //wait();
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if ((poi[i].x != cpos.x || poi[i].y != cpos.y) && cpos.x-poi[i].x <= std::abs(cpos.y-poi[i].y)){
+                        dist.push_back(99999);
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it];
                 }
                 break;
             }
             case KEY_RIGHT:{
-                for (int i = 0; i<5; i++){
-                    cpos.x = (cpos.x*scale + 2)/scale;
-                  //drawCity(city);
-                  //if (scale >= 0.25){
-                  //    drawShell(dist);
-                  //}
-                  //refresh();
-                  //wait();
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if ((poi[i].x != cpos.x || poi[i].y != cpos.y) && cpos.x-poi[i].x >= std::abs(cpos.y-poi[i].y)){
+                        dist.push_back(cpos.x-poi[i].x);
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it];
                 }
                 break;
             }
@@ -256,6 +286,7 @@ void cityrender(){
                             if (scale >= 0.25){
                                 drawShell(dist,scale);
                             }
+                            drawPoi(poi, scale);
                             refresh();
                             wait();
                         }
@@ -269,6 +300,7 @@ void cityrender(){
                             if (scale >= 0.25){
                                 drawShell(dist,scale);
                             }
+                            drawPoi(poi, scale);
                             refresh();
                             wait();
                         }
@@ -290,6 +322,7 @@ void cityrender(){
                             if (scale >= 0.25){
                                 drawShell(dist,scale);
                             }
+                            drawPoi(poi, scale);
                             refresh();
                             wait();
                         }
@@ -303,6 +336,7 @@ void cityrender(){
                             if (scale >= 0.25){
                                 drawShell(dist,scale);
                             }
+                            drawPoi(poi, scale);
                             refresh();
                             wait();
                         }
