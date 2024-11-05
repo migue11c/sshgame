@@ -41,7 +41,7 @@ int main(){
     noecho();
     cbreak();
     curs_set(0);
-    animVector();
+    //animVector();
     //draw intro animation here
 
     //animVector();
@@ -57,7 +57,6 @@ int main(){
         }
         case 1: { //settings
             settingsScreen(yMax,xMax); //unfinished, for now only returns you here
-            textAnimation("this is the settings page",10, 20);
             goto start;
         }
         case 2: { //exit the game

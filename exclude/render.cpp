@@ -30,6 +30,7 @@ struct wall{
 
 inline vertex cpos={0,0};
 inline int offs=0;
+static vertex anchor{96,235};
 
 void refreshTimer(bool done) {
     while (!done) {
@@ -40,7 +41,7 @@ void refreshTimer(bool done) {
 }
 
 void wait() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    std::this_thread::sleep_for(std::chrono::milliseconds(25));
 }
 
 void textAnimation(std::string text, int y, int x){
@@ -134,9 +135,9 @@ void drawShell(shell dist, double scale){
         drawVector(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x),
             maxy/2+scale*(dist.points[(i+1)].y-cpos.y), maxx/2+scale*(dist.points[(i+1)].x-cpos.x), 1, 0);
     }
-    for (int i = 0; i<70;i++){ // this needs to be removed on release
-        mvprintw(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x), "%d",i+1);
-    }
+  //for (int i = 0; i<70;i++){ // this needs to be removed on release
+  //    mvprintw(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x), "%d",i+1);
+  //}
 }
 
 map getMap(){
@@ -158,12 +159,12 @@ void drawCity(map city, double scale) {
                     maxy/2+scale*(city.points[(i+1)%30].y-cpos.y), maxx/2+scale*(city.points[(i+1)%30].x-cpos.x), 1, 0);
             }
     }
-    for (int i = 0; i<30;i++){ // remove on release
-        if (maxy/2+scale*(city.points[i].y-cpos.y) >= 0 && maxx/2+scale*(city.points[i].x-cpos.x >= 0) &&
-            maxy/2+scale*(city.points[i].y-cpos.y) < maxy && maxx/2+scale*(city.points[i].x-cpos.x < maxx)){
-                mvprintw(maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x), "%d",i+1);
-            }
-    }
+  //for (int i = 0; i<30;i++){ // remove on release
+  //    if (maxy/2+scale*(city.points[i].y-cpos.y) >= 0 && maxx/2+scale*(city.points[i].x-cpos.x >= 0) &&
+  //        maxy/2+scale*(city.points[i].y-cpos.y) < maxy && maxx/2+scale*(city.points[i].x-cpos.x < maxx)){
+  //            mvprintw(maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x), "%d",i+1);
+  //        }
+  //}
 }
 
 void drawPos(vertex cam, double scale){
@@ -174,50 +175,52 @@ double distance(vertex st, vertex en){
     return std::sqrt((en.x-st.x)*(en.x-st.x)+(en.y-st.y)*(en.y-st.y));
 }
 
-std::vector<vertex> getPoi(){
-    std::vector<vertex> poi;
-    poi.push_back({94,240});
-    poi.push_back({80,223});
-    poi.push_back({81,267});
-    poi.push_back({106,266});
-    poi.push_back({113,209});
-    poi.push_back({86,181});
-    poi.push_back({61,211});
-    poi.push_back({63,283});
-    poi.push_back({90,315});
-    poi.push_back({124,291});
-    poi.push_back({132,221});
-    poi.push_back({120,167});
-    poi.push_back({87,339});
-    poi.push_back({53,153});
-    poi.push_back({41,209});
-    poi.push_back({40,263});
-    poi.push_back({55,338});
-    poi.push_back({105,367});
-    poi.push_back({140,341});
-    poi.push_back({149,273});
-    poi.push_back({153,197});
-    poi.push_back({125,125});
-    poi.push_back({85,86});
-    poi.push_back({49,97});
-    poi.push_back({23,176});
+std::vector<poi> getPoi(){
+    std::vector<poi> poi;
+    poi.push_back({{96,235},"District 1: A"});
+    poi.push_back({{80,223},"District 2: B"});
+    poi.push_back({{81,267},"District 3: C"});
+    poi.push_back({{106,266},"District 4: D"});
+    poi.push_back({{113,209},"District 5: E"});
+    poi.push_back({{86,181},"District 6: F"});
+    poi.push_back({{61,211},"District 7: G"});
+    poi.push_back({{63,283},"District 8: H"});
+    poi.push_back({{90,315},"District 9: I"});
+    poi.push_back({{124,291},"District 10: J"});
+    poi.push_back({{132,221},"District 11: K"});
+    poi.push_back({{120,167},"District 12: L"});
+    poi.push_back({{87,139},"District 13: M"});
+    poi.push_back({{53,153},"District 14: N"});
+    poi.push_back({{41,209},"District 15: O"});
+    poi.push_back({{40,263},"District 16: P"});
+    poi.push_back({{55,338},"District 17: Q"});
+    poi.push_back({{105,367},"District 18: R"});
+    poi.push_back({{140,341},"District 19: S"});
+    poi.push_back({{149,273},"District 20: T"});
+    poi.push_back({{153,197},"District 21: U"});
+    poi.push_back({{125,125},"District 22: V"});
+    poi.push_back({{85,86},"District 23: W"});
+    poi.push_back({{49,97},"District 24: X"});
+    poi.push_back({{23,176},"District 25: Y"});
     return poi;
 }
-void drawPoi(std::vector<vertex> poi,double scale){
+void drawPoi(std::vector<poi> poi,double scale){
     float maxx,maxy;
-    std::string text;
-    text = "Current Location";
+    int mark;
     getmaxyx(stdscr, maxy, maxx);
     for (int i=0; i<poi.size(); i++){
-        if (cpos.x != poi[i].x && cpos.y != poi[i].y &&
-            maxy/2+scale*(poi[i].y-cpos.y) >= 0 && maxy/2+scale*(poi[i].y-cpos.y)<maxy &&
-            maxx/2+scale*(poi[i].x-cpos.x) >= 1 && maxx/2+scale*(poi[i].x-cpos.x)<maxx-1){
-            mvwprintw(stdscr, maxy/2+scale*(poi[i].y-cpos.y), maxx/2+scale*(poi[i].x-cpos.x)-1, "[x]");
+        if (cpos.x != poi[i].coord.x && cpos.y != poi[i].coord.y &&
+            maxy/2+scale*(poi[i].coord.y-cpos.y) >= 0 && maxy/2+scale*(poi[i].coord.y-cpos.y)<maxy &&
+            maxx/2+scale*(poi[i].coord.x-cpos.x) >= 1 && maxx/2+scale*(poi[i].coord.x-cpos.x)<maxx-1){
+            mvwprintw(stdscr, maxy/2+scale*(poi[i].coord.y-cpos.y), maxx/2+scale*(poi[i].coord.x-cpos.x)-1, "[x]");
+        }
+        else if (cpos.x == poi[i].coord.x && cpos.y == poi[i].coord.y){
+            mark = i;
         }
     }
     wrefresh(stdscr);
     if (scale>=0.25) {
-        textAnimation(text, maxy/2, (maxx/2)-2-text.length()/2);
+        textAnimation(poi[mark].name, maxy/2, (maxx/2)-2-poi[mark].name.length()/2);
     }
 }
 
@@ -225,7 +228,7 @@ void drawPoi(std::vector<vertex> poi,double scale){
 //DRAWPOI IS NOT IMPLEMENTED FOR NAMES, IT ALSO HAS WREFRESH FUNCTION, PLEASE KEEP THAT IN MIND
 void cityrender(){
     shell dist = getShell();
-    std::vector<vertex> poi = getPoi();
+    std::vector<poi> poi = getPoi();
     map city = getMap();
     initscr();
     noecho();
@@ -233,7 +236,7 @@ void cityrender(){
     curs_set(0);
     int sc=0;
     double scale = 0.2;
-    cpos = poi[0];
+    cpos = poi[0].coord;
     float maxx,maxy;
     getmaxyx(stdscr, maxy, maxx);
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
@@ -242,11 +245,11 @@ void cityrender(){
         if (scale > 0.25){
             drawShell(dist, scale);
         }
-        drawPos(cpos, scale);
-        drawVector(maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0);
+        //drawPos(cpos, scale);
+        drawVector(maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0); // this is direction testing
         drawVector(0, maxx/2-maxy, maxy, maxx/2+maxy, 4, 0);
         refresh();
-        vertex cit = {94.044,230.273};
+        vertex cit = {86,210};
         if (scale <= 0.25){
             textAnimation("The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4); // this does not work
         }
@@ -259,9 +262,9 @@ void cityrender(){
             case KEY_UP:{
                 std::vector<double> dist;
                 for (int i=0; i<poi.size();i++){
-                    if (2*(poi[i].y-cpos.y) <= -std::abs(poi[i].x-cpos.x) && // vertical
-                        poi[i].y-cpos.y != 0){ // it goes up
-                            dist.push_back(distance(cpos, poi[i]));
+                    if (2*(poi[i].coord.y-cpos.y) <= -std::abs(poi[i].coord.x-cpos.x) && // vertical
+                        poi[i].coord.y-cpos.y != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
                     }
                     else{
                         dist.push_back(99999);
@@ -270,7 +273,7 @@ void cityrender(){
                 }
                 int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
                 if (dist[it] != 99999){
-                    cpos = poi[it];
+                    cpos = poi[it].coord;
                 }
                 else{
                     goto ch;
@@ -281,9 +284,9 @@ void cityrender(){
             case KEY_DOWN:{
                 std::vector<double> dist;
                 for (int i=0; i<poi.size();i++){
-                    if (2*(poi[i].y-cpos.y) >= std::abs(poi[i].x-cpos.x) && // vertical
-                        poi[i].y-cpos.y != 0){ // it goes up
-                            dist.push_back(distance(cpos, poi[i]));
+                    if (2*(poi[i].coord.y-cpos.y) >= std::abs(poi[i].coord.x-cpos.x) && // vertical
+                        poi[i].coord.y-cpos.y != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
                     }
                     else{
                         dist.push_back(99999);
@@ -292,7 +295,7 @@ void cityrender(){
                 }
                 int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
                 if (dist[it] != 99999){
-                    cpos = poi[it];
+                    cpos = poi[it].coord;
                 }
                 else{
                     goto ch;
@@ -303,9 +306,9 @@ void cityrender(){
             case KEY_LEFT:{
                 std::vector<double> dist;
                 for (int i=0; i<poi.size();i++){
-                    if (poi[i].x-cpos.x <= -2*std::abs(poi[i].y-cpos.y) && // vertical
-                        poi[i].x-cpos.x != 0){ // it goes up
-                            dist.push_back(distance(cpos, poi[i]));
+                    if (poi[i].coord.x-cpos.x <= -2*std::abs(poi[i].coord.y-cpos.y) && // vertical
+                        poi[i].coord.x-cpos.x != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
                     }
                     else{
                         dist.push_back(99999);
@@ -314,7 +317,7 @@ void cityrender(){
                 }
                 int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
                 if (dist[it] != 99999){
-                    cpos = poi[it];
+                    cpos = poi[it].coord;
                 }
                 else{
                     goto ch;
@@ -325,9 +328,9 @@ void cityrender(){
             case KEY_RIGHT:{
                 std::vector<double> dist;
                 for (int i=0; i<poi.size();i++){
-                    if (poi[i].x-cpos.x >= 2*std::abs(poi[i].y-cpos.y) && // vertical
-                        poi[i].x-cpos.x != 0){ // it goes up
-                            dist.push_back(distance(cpos, poi[i]));
+                    if (poi[i].coord.x-cpos.x >= 2*std::abs(poi[i].coord.y-cpos.y) && // vertical
+                        poi[i].coord.x-cpos.x != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
                     }
                     else{
                         dist.push_back(99999);
@@ -336,7 +339,8 @@ void cityrender(){
                 }
                 int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
                 if (dist[it] != 99999){
-                    cpos = poi[it];
+                    cpos = poi[it].coord;
+                  //cpos = {poi[it].coord.y - anchor.y,poi[it].coord.x - anchor.x}; //test of anchor
                 }
                 else{
                     goto ch;
@@ -345,7 +349,6 @@ void cityrender(){
                 break;
             }
 
-            //SCALE NEEDS TO BE DONE IN 3 STEPS, STEP 3 NEEDS TO CHECK FOR NODE
             case 'z':{
                 switch (sc){
                     case 0:{

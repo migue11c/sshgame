@@ -1,5 +1,5 @@
 log.txt
+*.exe
 game
-game.exe
 server/server.exe
 server/server

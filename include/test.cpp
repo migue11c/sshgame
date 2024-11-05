@@ -10,7 +10,7 @@
 using namespace std;
 
 void wait() {
-    this_thread::sleep_for(chrono::milliseconds(200));
+    this_thread::sleep_for(chrono::milliseconds(25));
 }
 
 void textAnimation(string text, int y, int x){
