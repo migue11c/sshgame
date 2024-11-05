@@ -9,22 +9,39 @@
 #include <chrono>
 #include <vector>
 
+// TODO: scanline floodfill algorithm https://lodev.org/cgtutor/floodfill.html
+//          This is so that you (likely) don't have to implement drawing each polygon.
+//          Good idea is to use mvwinchstr()
+// drawVertex refactor
+// Anchored camera view
+// Unified system of loading vertices and returning a vector of vectors (i fucking hate and love this)
+// Point of interest additional information
+// draw and move between different sets of POIs based on scale
+// add hidden POIs that can't be interacted with unless a condition is satisfied
+// change camera anchor based on sector and scale
+
 struct vertex{
     double y,x;
 };
 
-struct poi{
-    vertex coord;
-    std::string name;
+struct sector{ // this will essentially be player information
+    int ar,dis,plc; //area, district and place
 };
 
-struct map{ //these two are practically the same, there is no reason for them to exist
+struct poi{ // needs additional info
+    vertex coord;
+    std::string name;
+    float scl; //scales the poi accordingly
+    // make sure to make an array of poi to make things easier later
+};
+
+struct map{ // these two are practically the same, there is no reason for them to exist
     vertex points[30];
 };
 struct shell{
     vertex points[70];
 };
-struct wall{
+struct wall{ // redundant
     std::vector<vertex> points;
 };
 
@@ -63,14 +80,14 @@ void textAnimation(std::string text, int y, int x){
   //refresh();
 }
 
-void drawVector(int sty, int stx, int finy, int finx, int div, int offs){ // needs to NOT wprintw when invalid position
+void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
     int dy = abs(finy - sty);
     int sy = sty < finy ? 1 : -1;
     int dx = abs(finx - stx);
     int sx = stx < finx ? 1 : -1;
     int err = (dx > dy ? dx : -dy)/2, e2;
     int i = 0;
-    while(1){
+    while(1){ // i still need to understand this
        	wmove(stdscr, sty, stx);
         if (sty>=0 && stx>=0 && sty<getmaxy(stdscr) && stx<getmaxx(stdscr) && (i+offs)%div == 0){
             wprintw(stdscr, "#");
@@ -103,7 +120,10 @@ void animVector(){
     std::thread rf(refreshTimer,done);
     rf.detach();
     while (1){
-        clear(); //this clears entire window, need to localize it to vectors
+        wclear(stdscr); //this clears entire window, need to localize it to vectors
+        // ...which means you also need a special window for vectors and to call it in args...
+        //
+        // also please refactor drawVector() to use vertex instead of x,y, and make a char arg to control what is being printed
         drawVector(7, 5, 7, 20, 3, offs/3);
         drawVector(7, 20, 17+cos(i/4)*5, 22+sin(i/4)*5, 3, offs/3);
         drawVector(17+cos(i/4)*5, 22+sin(i/4)*5, 14, 8, 3, offs/3);
@@ -125,6 +145,7 @@ shell getShell(){
     return dist;
 }
 
+// this is essentially drawCity()
 void drawShell(shell dist, double scale){
     float maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
@@ -177,31 +198,31 @@ double distance(vertex st, vertex en){
 
 std::vector<poi> getPoi(){
     std::vector<poi> poi;
-    poi.push_back({{96,235},"District 1: A"});
-    poi.push_back({{80,223},"District 2: B"});
-    poi.push_back({{81,267},"District 3: C"});
-    poi.push_back({{106,266},"District 4: D"});
-    poi.push_back({{113,209},"District 5: E"});
-    poi.push_back({{86,181},"District 6: F"});
-    poi.push_back({{61,211},"District 7: G"});
-    poi.push_back({{63,283},"District 8: H"});
-    poi.push_back({{90,315},"District 9: I"});
-    poi.push_back({{124,291},"District 10: J"});
-    poi.push_back({{132,221},"District 11: K"});
-    poi.push_back({{120,167},"District 12: L"});
-    poi.push_back({{87,139},"District 13: M"});
-    poi.push_back({{53,153},"District 14: N"});
-    poi.push_back({{41,209},"District 15: O"});
-    poi.push_back({{40,263},"District 16: P"});
-    poi.push_back({{55,338},"District 17: Q"});
-    poi.push_back({{105,367},"District 18: R"});
-    poi.push_back({{140,341},"District 19: S"});
-    poi.push_back({{149,273},"District 20: T"});
-    poi.push_back({{153,197},"District 21: U"});
-    poi.push_back({{125,125},"District 22: V"});
-    poi.push_back({{85,86},"District 23: W"});
-    poi.push_back({{49,97},"District 24: X"});
-    poi.push_back({{23,176},"District 25: Y"});
+    poi.push_back({{96,235},"District 1: A",1});
+    poi.push_back({{80,223},"District 2: B",2});
+    poi.push_back({{81,267},"District 3: C",3});
+    poi.push_back({{106,266},"District 4: D",4});
+    poi.push_back({{113,209},"District 5: E",5});
+    poi.push_back({{86,181},"District 6: F",6});
+    poi.push_back({{61,211},"District 7: G",7});
+    poi.push_back({{63,283},"District 8: H",8});
+    poi.push_back({{90,315},"District 9: I",9});
+    poi.push_back({{124,291},"District 10: J",10});
+    poi.push_back({{132,221},"District 11: K",11});
+    poi.push_back({{120,167},"District 12: L",12});
+    poi.push_back({{87,139},"District 13: M",13});
+    poi.push_back({{53,153},"District 14: N",14});
+    poi.push_back({{41,209},"District 15: O",15});
+    poi.push_back({{40,263},"District 16: P",16});
+    poi.push_back({{55,338},"District 17: Q",17});
+    poi.push_back({{105,367},"District 18: R",18});
+    poi.push_back({{140,341},"District 19: S",19});
+    poi.push_back({{149,273},"District 20: T",20});
+    poi.push_back({{153,197},"District 21: U",21});
+    poi.push_back({{125,125},"District 22: V",22});
+    poi.push_back({{85,86},"District 23: W",23});
+    poi.push_back({{49,97},"District 24: X",24});
+    poi.push_back({{23,176},"District 25: Y",25});
     return poi;
 }
 void drawPoi(std::vector<poi> poi,double scale){
