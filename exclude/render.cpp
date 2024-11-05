@@ -32,6 +32,7 @@ struct poi{ // needs additional info
     vertex coord;
     std::string name;
     float scl; //scales the poi accordingly
+    int cond; //condition for display and interaction
     // make sure to make an array of poi to make things easier later
 };
 
