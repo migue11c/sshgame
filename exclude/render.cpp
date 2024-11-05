@@ -12,7 +12,7 @@
 // TODO: scanline floodfill algorithm https://lodev.org/cgtutor/floodfill.html
 //          This is so that you (likely) don't have to implement drawing each polygon.
 //          Good idea is to use mvwinchstr()
-// drawVertex refactor
+// drawVector refactor
 // Anchored camera view
 // Unified system of loading vertices and returning a vector of vectors (i fucking hate and love this)
 // Point of interest additional information
@@ -400,7 +400,7 @@ void cityrender(){
                         break;
                     }
                     default:{
-                        break;
+                        goto ch;
                     }
                 }
                 break;
@@ -434,7 +434,7 @@ void cityrender(){
                         break;
                     }
                     default:{
-                        break;
+                        goto ch;
                     }
                 }
                 break;
