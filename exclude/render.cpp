@@ -62,14 +62,14 @@ void wait() {
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
 }
 
-void textAnimation(std::string text, int y, int x){
-    WINDOW* anim = newwin(1, text.length()+4, y, x);
+void textAnimation(WINDOW* win, std::string text, int y, int x, int offs){
+    WINDOW* anim = newwin(1, text.length()+4, y+offs, x+offs);
   //curs_set(2);
     std::string buffer;
     for (int i = 0;i<text.length();i++){
         wmove(anim,0, ((text.length()+4)/2) - 1 - i/2);
         buffer += text[i];
-        if (x>=0 && y>=0 && x<getmaxx(stdscr) && y<getmaxy(stdscr)){
+        if (x>=0 && y>=0 && x<getmaxx(win) && y<getmaxy(win)){
             wprintw(anim,"[%s]",buffer.c_str());
         }
         wrefresh(anim);
@@ -81,7 +81,7 @@ void textAnimation(std::string text, int y, int x){
   //refresh();
 }
 
-void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
+void drawVector(WINDOW* win, int sty, int stx, int finy, int finx, int div, int offs){
     int dy = abs(finy - sty);
     int sy = sty < finy ? 1 : -1;
     int dx = abs(finx - stx);
@@ -89,9 +89,9 @@ void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
     int err = (dx > dy ? dx : -dy)/2, e2;
     int i = 0;
     while(1){ // i still need to understand this
-       	wmove(stdscr, sty, stx);
-        if (sty>=0 && stx>=0 && sty<getmaxy(stdscr) && stx<getmaxx(stdscr) && (i+offs)%div == 0){
-            wprintw(stdscr, "#");
+       	wmove(win, sty, stx);
+        if (sty>=0 && stx>=0 && sty<getmaxy(win) && stx<getmaxx(win) && (i+offs)%div == 0){
+            wprintw(win, "#");
         }
 
         if (stx==finx && sty==finy){
@@ -115,21 +115,21 @@ void drawVector(int sty, int stx, int finy, int finx, int div, int offs){
 }
 
 // work on this later
-void animVector(){
+void animVector(WINDOW* win){
     float i=0;
     bool done = false;
     std::thread rf(refreshTimer,done);
     rf.detach();
     while (1){
-        wclear(stdscr); //this clears entire window, need to localize it to vectors
+        wclear(win); //this clears entire window, need to localize it to vectors
         // ...which means you also need a special window for vectors and to call it in args...
         //
         // also please refactor drawVector() to use vertex instead of x,y, and make a char arg to control what is being printed
-        drawVector(7, 5, 7, 20, 3, offs/3);
-        drawVector(7, 20, 17+cos(i/4)*5, 22+sin(i/4)*5, 3, offs/3);
-        drawVector(17+cos(i/4)*5, 22+sin(i/4)*5, 14, 8, 3, offs/3);
+        drawVector(win,7, 5, 7, 20, 3, offs/3);
+        drawVector(win,7, 20, 17+cos(i/4)*5, 22+sin(i/4)*5, 3, offs/3);
+        drawVector(win,17+cos(i/4)*5, 22+sin(i/4)*5, 14, 8, 3, offs/3);
         mvprintw(0, 0, "y: %f, x: %f",(17+cos(i/4)*5),(22+cos(i/4)*5));
-        drawVector(14, 8, 7, 5, 3, offs/3);
+        drawVector(win,14, 8, 7, 5, 3, offs/3);
         wait();
         i++;
     }
@@ -147,14 +147,14 @@ shell getShell(){
 }
 
 // this is essentially drawCity()
-void drawShell(shell dist, double scale){
+void drawShell(WINDOW* win, shell dist, double scale){
     float maxy,maxx;
     getmaxyx(stdscr, maxy, maxx);
     for (int i = 0; i<69; i++){ //draws each segment to scale and with camera
         if (maxy/2+scale*(dist.points[i].y-cpos.y) >= 0 || maxx/2+scale*(dist.points[i].x-cpos.x) >= 0 ||
                 maxy/2+scale*(dist.points[(i+1)].y-cpos.y) < maxy || maxx/2+scale*(dist.points[(i+1)].x-cpos.x) < maxx){
         }
-        drawVector(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x),
+        drawVector(win,maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x),
             maxy/2+scale*(dist.points[(i+1)].y-cpos.y), maxx/2+scale*(dist.points[(i+1)].x-cpos.x), 1, 0);
     }
   //for (int i = 0; i<70;i++){ // this needs to be removed on release
@@ -171,20 +171,21 @@ map getMap(){
     return city;
 }
 
-void drawCity(map city, double scale) {
+void drawCity(WINDOW* win, map city, double scale) {
     float maxy,maxx;
-    getmaxyx(stdscr, maxy, maxx);
+    getmaxyx(win, maxy, maxx);
+
     for (int i = 0; i<30; i++){ //draws each segment to scale and with camera
         if (maxy/2+scale*(city.points[i].y-cpos.y) >=0 || maxx/2+scale*(city.points[i].x-cpos.x >= 0) ||
             maxy/2+scale*(city.points[(i+1)%30].y-cpos.y) < maxy || maxx/2+scale*(city.points[(i+1)%30].x-cpos.x) < maxx){
-                drawVector(maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x),
+                drawVector(win, maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x),
                     maxy/2+scale*(city.points[(i+1)%30].y-cpos.y), maxx/2+scale*(city.points[(i+1)%30].x-cpos.x), 1, 0);
             }
     }
   //for (int i = 0; i<30;i++){ // remove on release
   //    if (maxy/2+scale*(city.points[i].y-cpos.y) >= 0 && maxx/2+scale*(city.points[i].x-cpos.x >= 0) &&
   //        maxy/2+scale*(city.points[i].y-cpos.y) < maxy && maxx/2+scale*(city.points[i].x-cpos.x < maxx)){
-  //            mvprintw(maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x), "%d",i+1);
+  //            mvwprintw(win, maxy/2+scale*(city.points[i].y-cpos.y), maxx/2+scale*(city.points[i].x-cpos.x), "%d",i+1);
   //        }
   //}
 }
@@ -226,61 +227,63 @@ std::vector<poi> getPoi(){
     poi.push_back({{23,176},"District 25: Y",25});
     return poi;
 }
-void drawPoi(std::vector<poi> poi,double scale){
+void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
     float maxx,maxy;
     int mark;
-    getmaxyx(stdscr, maxy, maxx);
+    getmaxyx(win, maxy, maxx);
     for (int i=0; i<poi.size(); i++){
         if (cpos.x != poi[i].coord.x && cpos.y != poi[i].coord.y &&
             maxy/2+scale*(poi[i].coord.y-cpos.y) >= 0 && maxy/2+scale*(poi[i].coord.y-cpos.y)<maxy &&
             maxx/2+scale*(poi[i].coord.x-cpos.x) >= 1 && maxx/2+scale*(poi[i].coord.x-cpos.x)<maxx-1){
-            mvwprintw(stdscr, maxy/2+scale*(poi[i].coord.y-cpos.y), maxx/2+scale*(poi[i].coord.x-cpos.x)-1, "[x]");
+            mvwprintw(win, maxy/2+scale*(poi[i].coord.y-cpos.y)+offs, maxx/2+scale*(poi[i].coord.x-cpos.x)-1+offs, "[x]");
         }
         else if (cpos.x == poi[i].coord.x && cpos.y == poi[i].coord.y){
             mark = i;
         }
     }
-    wrefresh(stdscr);
+    wrefresh(win);
     if (scale>=0.25) {
-        textAnimation(poi[mark].name, maxy/2, (maxx/2)-2-poi[mark].name.length()/2);
+        textAnimation(win, poi[mark].name, maxy/2, (maxx/2)-2-poi[mark].name.length()/2,offs); // the +2 needs to be fixed
     }
 }
 
 
 //DRAWPOI IS NOT IMPLEMENTED FOR NAMES, IT ALSO HAS WREFRESH FUNCTION, PLEASE KEEP THAT IN MIND
 void cityrender(){
+    WINDOW* border = newwin(getmaxy(stdscr)-2, getmaxx(stdscr)-2, 1, 1);
+    WINDOW* worldmap = newwin(getmaxy(stdscr)-4, getmaxx(stdscr)-4, 2, 2);
     shell dist = getShell();
     std::vector<poi> poi = getPoi();
     map city = getMap();
-    initscr();
-    noecho();
-    keypad(stdscr, true);
-    curs_set(0);
+    keypad(worldmap, true);
     int sc=0;
     double scale = 0.2;
     cpos = poi[0].coord;
     float maxx,maxy;
-    getmaxyx(stdscr, maxy, maxx);
+    getmaxyx(worldmap, maxy, maxx);
+    box(border, 0, 0);
+    wrefresh(border);
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
-        clear();
-        drawCity(city,scale);
+        wclear(worldmap);
+        drawCity(worldmap, city,scale);
         if (scale > 0.25){
-            drawShell(dist, scale);
+            drawShell(worldmap, dist, scale);
         }
         //drawPos(cpos, scale);
-        drawVector(maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0); // this is direction testing
-        drawVector(0, maxx/2-maxy, maxy, maxx/2+maxy, 4, 0);
-        refresh();
+        drawVector(worldmap, maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0); // this is direction testing
+        drawVector(worldmap, 0, maxx/2-maxy, maxy, maxx/2+maxy, 4, 0);
+        wrefresh(worldmap);
         vertex cit = {86,210};
-        if (scale <= 0.25){
-            textAnimation("The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4); // this does not work
+
+        if (scale <= 0.25){ // make this a new thread
+            textAnimation(worldmap, "The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, 2); // THIS IS NOT RELATIVE TO A WINDOW
         }
         else {
-            drawPoi(poi, scale);
+            drawPoi(worldmap,poi, scale,2);
         }
         // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
         ch:
-        switch (getch()) { // please work on the dist method. it doesn't work properly
+        switch (wgetch(worldmap)) { // please work on the dist method. it doesn't work properly
             case KEY_UP:{
                 std::vector<double> dist;
                 for (int i=0; i<poi.size();i++){
@@ -376,11 +379,11 @@ void cityrender(){
                     case 0:{
                         for (int i = 0; i<5; i++){
                             scale += 0.05;
-                            drawCity(city,scale);
+                            drawCity(worldmap, city,scale);
                             if (scale >= 0.25){
-                                drawShell(dist,scale);
+                                drawShell(worldmap,dist,scale);
                             }
-                            refresh();
+                            wrefresh(worldmap);
                             wait();
                         }
                         sc++;
@@ -389,11 +392,11 @@ void cityrender(){
                     case 1:{
                         for (int i = 0; i<5; i++){
                             scale += 0.11;
-                            drawCity(city,scale);
+                            drawCity(worldmap, city,scale);
                             if (scale >= 0.25){
-                                drawShell(dist,scale);
+                                drawShell(worldmap,dist,scale);
                             }
-                            refresh();
+                            wrefresh(worldmap);
                             wait();
                         }
                         sc++;
@@ -410,11 +413,11 @@ void cityrender(){
                     case 1:{
                         for (int i = 0; i<5; i++){
                             scale -= 0.05;
-                            drawCity(city,scale);
+                            drawCity(worldmap, city,scale);
                             if (scale >= 0.25){
-                                drawShell(dist,scale);
+                                drawShell(worldmap,dist,scale);
                             }
-                            refresh();
+                            wrefresh(worldmap);
                             wait();
                         }
                         sc--;
@@ -423,11 +426,11 @@ void cityrender(){
                     case 2:{
                         for (int i = 0; i<5; i++){
                             scale -= 0.11;
-                            drawCity(city,scale);
+                            drawCity(worldmap, city,scale);
                             if (scale >= 0.25){
-                                drawShell(dist,scale);
+                                drawShell(worldmap,dist,scale);
                             }
-                            refresh();
+                            wrefresh(worldmap);
                             wait();
                         }
                         sc--;
@@ -448,6 +451,9 @@ void cityrender(){
     //animVector();
 }
 int main(){
+    initscr();
+    noecho();
+    curs_set(0);
     cityrender();
     return 0;
 }
