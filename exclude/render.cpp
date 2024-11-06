@@ -262,6 +262,7 @@ void cityrender(){
     float maxx,maxy;
     getmaxyx(worldmap, maxy, maxx);
     box(border, 0, 0);
+    mvwprintw(border, 0, 3, "[World Map]");
     wrefresh(border);
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
         wclear(worldmap);
