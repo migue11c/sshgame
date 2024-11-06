@@ -149,7 +149,7 @@ shell getShell(){
 // this is essentially drawCity()
 void drawShell(WINDOW* win, shell dist, double scale){
     float maxy,maxx;
-    getmaxyx(stdscr, maxy, maxx);
+    getmaxyx(win, maxy, maxx);
     for (int i = 0; i<69; i++){ //draws each segment to scale and with camera
         if (maxy/2+scale*(dist.points[i].y-cpos.y) >= 0 || maxx/2+scale*(dist.points[i].x-cpos.x) >= 0 ||
                 maxy/2+scale*(dist.points[(i+1)].y-cpos.y) < maxy || maxx/2+scale*(dist.points[(i+1)].x-cpos.x) < maxx){
@@ -235,7 +235,7 @@ void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
         if (cpos.x != poi[i].coord.x && cpos.y != poi[i].coord.y &&
             maxy/2+scale*(poi[i].coord.y-cpos.y) >= 0 && maxy/2+scale*(poi[i].coord.y-cpos.y)<maxy &&
             maxx/2+scale*(poi[i].coord.x-cpos.x) >= 1 && maxx/2+scale*(poi[i].coord.x-cpos.x)<maxx-1){
-            mvwprintw(win, maxy/2+scale*(poi[i].coord.y-cpos.y)+offs, maxx/2+scale*(poi[i].coord.x-cpos.x)-1+offs, "[x]");
+            mvwprintw(win, maxy/2+scale*(poi[i].coord.y-cpos.y), maxx/2+scale*(poi[i].coord.x-cpos.x)-1, "[x]");
         }
         else if (cpos.x == poi[i].coord.x && cpos.y == poi[i].coord.y){
             mark = i;
@@ -247,12 +247,13 @@ void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
     }
 }
 
-
-//DRAWPOI IS NOT IMPLEMENTED FOR NAMES, IT ALSO HAS WREFRESH FUNCTION, PLEASE KEEP THAT IN MIND
 void cityrender(){
     WINDOW* border = newwin(getmaxy(stdscr)-2, getmaxx(stdscr)-2, 1, 1);
     WINDOW* worldmap = newwin(getmaxy(stdscr)-4, getmaxx(stdscr)-4, 2, 2);
     shell dist = getShell();
+
+    int offs = 2; // this actually needs to be implemented because some things are not displayed relative to the center but to the corner
+
     std::vector<poi> poi = getPoi();
     map city = getMap();
     keypad(worldmap, true);
@@ -266,7 +267,7 @@ void cityrender(){
     wrefresh(border);
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
         wclear(worldmap);
-        drawCity(worldmap, city,scale);
+        drawCity(worldmap,city,scale);
         if (scale > 0.25){
             drawShell(worldmap, dist, scale);
         }
@@ -277,10 +278,10 @@ void cityrender(){
         vertex cit = {86,210};
 
         if (scale <= 0.25){ // make this a new thread
-            textAnimation(worldmap, "The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, 2); // THIS IS NOT RELATIVE TO A WINDOW
+            textAnimation(worldmap, "The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, offs); // THIS IS NOT RELATIVE TO A WINDOW
         }
         else {
-            drawPoi(worldmap,poi, scale,2);
+            drawPoi(worldmap,poi, scale,offs);
         }
         // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
         ch:
