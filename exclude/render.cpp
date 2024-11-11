@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <iterator>
 #include <ncurses/ncurses.h>
@@ -12,8 +13,8 @@
 // TODO: scanline floodfill algorithm https://lodev.org/cgtutor/floodfill.html
 //          This is so that you (likely) don't have to implement drawing each polygon.
 //          Good idea is to use mvwinchstr()
-// drawVector refactor
-// Anchored camera view
+// drawVector refactor (done)
+// Anchored camera view (done)
 // Unified system of loading vertices and returning a vector of vectors (i fucking hate and love this)
 // Point of interest additional information
 // draw and move between different sets of POIs based on scale
@@ -30,9 +31,10 @@ struct sector{ // this will essentially be player information
 
 struct poi{ // needs additional info
     vertex coord;
-    std::string name;
-    float scl; //scales the poi accordingly
     int cond; //condition for display and interaction
+    char name[24];
+    int len;
+    float scl; //scales the poi accordingly (what is this again?)
     // make sure to make an array of poi to make things easier later
 };
 
@@ -199,32 +201,51 @@ double distance(vertex st, vertex en){
 }
 
 std::vector<poi> getPoi(){
+    std::vector<poi> Poi;
+    std::ifstream file("map.dat");
+    while (!file.bad()){
+        poi buffer;
+        file >> buffer.coord.y >> buffer.coord.x >> buffer.cond >> buffer.name;
+        buffer.len=0;
+        while (buffer.len<24){
+            if (buffer.name[buffer.len] == 0){
+                break;
+            }
+            buffer.len++;
+        }
+        Poi.push_back(buffer);
+    }
+    file.close();
+    return Poi;
+}
+
+std::vector<poi> tempgetPoi(){
     std::vector<poi> poi;
-    poi.push_back({{96,235},"District 1: A",1});
-    poi.push_back({{80,223},"District 2: B",2});
-    poi.push_back({{81,267},"District 3: C",3});
-    poi.push_back({{106,266},"District 4: D",4});
-    poi.push_back({{113,209},"District 5: E",5});
-    poi.push_back({{86,181},"District 6: F",6});
-    poi.push_back({{61,211},"District 7: G",7});
-    poi.push_back({{63,283},"District 8: H",8});
-    poi.push_back({{90,315},"District 9: I",9});
-    poi.push_back({{124,291},"District 10: J",10});
-    poi.push_back({{132,221},"District 11: K",11});
-    poi.push_back({{120,167},"District 12: L",12});
-    poi.push_back({{87,139},"District 13: M",13});
-    poi.push_back({{53,153},"District 14: N",14});
-    poi.push_back({{41,209},"District 15: O",15});
-    poi.push_back({{40,263},"District 16: P",16});
-    poi.push_back({{55,338},"District 17: Q",17});
-    poi.push_back({{105,367},"District 18: R",18});
-    poi.push_back({{140,341},"District 19: S",19});
-    poi.push_back({{149,273},"District 20: T",20});
-    poi.push_back({{153,197},"District 21: U",21});
-    poi.push_back({{125,125},"District 22: V",22});
-    poi.push_back({{85,86},"District 23: W",23});
-    poi.push_back({{49,97},"District 24: X",24});
-    poi.push_back({{23,176},"District 25: Y",25});
+    poi.push_back({{96,235},0,"District 1: A"});
+    poi.push_back({{80,223},0,"District 2: B"});
+    poi.push_back({{81,267},0,"District 3: C"});
+    poi.push_back({{106,266},0,"District 4: D"});
+    poi.push_back({{113,209},0,"District 5: E"});
+    poi.push_back({{86,181},0,"District 6: F"});
+    poi.push_back({{61,211},0,"District 7: G"});
+    poi.push_back({{63,283},0,"District 8: H"});
+    poi.push_back({{90,315},0,"District 9: I"});
+    poi.push_back({{124,291},0,"District 10: J"});
+    poi.push_back({{132,221},0,"District 11: K"});
+    poi.push_back({{120,167},0,"District 12: L"});
+    poi.push_back({{87,139},0,"District 13: M"});
+    poi.push_back({{53,153},0,"District 14: N"});
+    poi.push_back({{41,209},0,"District 15: O"});
+    poi.push_back({{40,263},0,"District 16: P"});
+    poi.push_back({{55,338},0,"District 17: Q"});
+    poi.push_back({{105,367},0,"District 18: R"});
+    poi.push_back({{140,341},0,"District 19: S"});
+    poi.push_back({{149,273},0,"District 20: T"});
+    poi.push_back({{153,197},0,"District 21: U"});
+    poi.push_back({{125,125},0,"District 22: V"});
+    poi.push_back({{85,86},0,"District 23: W"});
+    poi.push_back({{49,97},0,"District 24: X"});
+    poi.push_back({{23,176},0,"District 25: Y"});
     return poi;
 }
 void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
@@ -243,7 +264,7 @@ void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
     }
     wrefresh(win);
     if (scale>=0.25) {
-        textAnimation(win, poi[mark].name, maxy/2, (maxx/2)-2-poi[mark].name.length()/2,offs); // the +2 needs to be fixed
+        textAnimation(win, poi[mark].name, maxy/2, (maxx/2)-2-poi[mark].len/2,offs); // the +2 needs to be fixed
     }
 }
 
