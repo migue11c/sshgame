@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cstddef>
 #include <fstream>
 #include <iterator>
 #include <ncurses/ncurses.h>
@@ -64,12 +63,12 @@ void wait() {
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
 }
 
-void textAnimation(WINDOW* win, std::string text, int y, int x, int offs){
-    WINDOW* anim = newwin(1, text.length()+4, y+offs, x+offs);
+void textAnimation(WINDOW* win, std::string text, int len, int y, int x, int offs){
+    WINDOW* anim = newwin(1, len+4, y+offs, x+offs);
   //curs_set(2);
     std::string buffer;
-    for (int i = 0;i<text.length();i++){
-        wmove(anim,0, ((text.length()+4)/2) - 1 - i/2);
+    for (int i = 0;i<=len;i++){
+        wmove(anim,0, ((len+4)/2) - 1 - i/2);
         buffer += text[i];
         if (x>=0 && y>=0 && x<getmaxx(win) && y<getmaxy(win)){
             wprintw(anim,"[%s]",buffer.c_str());
@@ -203,17 +202,21 @@ double distance(vertex st, vertex en){
 std::vector<poi> getPoi(){
     std::vector<poi> Poi;
     std::ifstream file("map.dat");
-    while (!file.bad()){
+    int i = 0;
+    while (i<25){
         poi buffer;
-        file >> buffer.coord.y >> buffer.coord.x >> buffer.cond >> buffer.name;
+        file >> buffer.coord.y >> buffer.coord.x >> buffer.cond;
         buffer.len=0;
         while (buffer.len<24){
-            if (buffer.name[buffer.len] == 0){
+            file.get(buffer.name[buffer.len]);
+            if (buffer.name[buffer.len] == '\n'){
+                buffer.name[buffer.len] = 0;
                 break;
             }
             buffer.len++;
         }
         Poi.push_back(buffer);
+        i++;
     }
     file.close();
     return Poi;
@@ -221,31 +224,31 @@ std::vector<poi> getPoi(){
 
 std::vector<poi> tempgetPoi(){
     std::vector<poi> poi;
-    poi.push_back({{96,235},0,"District 1: A"});
-    poi.push_back({{80,223},0,"District 2: B"});
-    poi.push_back({{81,267},0,"District 3: C"});
-    poi.push_back({{106,266},0,"District 4: D"});
-    poi.push_back({{113,209},0,"District 5: E"});
-    poi.push_back({{86,181},0,"District 6: F"});
-    poi.push_back({{61,211},0,"District 7: G"});
-    poi.push_back({{63,283},0,"District 8: H"});
-    poi.push_back({{90,315},0,"District 9: I"});
-    poi.push_back({{124,291},0,"District 10: J"});
-    poi.push_back({{132,221},0,"District 11: K"});
-    poi.push_back({{120,167},0,"District 12: L"});
-    poi.push_back({{87,139},0,"District 13: M"});
-    poi.push_back({{53,153},0,"District 14: N"});
-    poi.push_back({{41,209},0,"District 15: O"});
-    poi.push_back({{40,263},0,"District 16: P"});
-    poi.push_back({{55,338},0,"District 17: Q"});
-    poi.push_back({{105,367},0,"District 18: R"});
-    poi.push_back({{140,341},0,"District 19: S"});
-    poi.push_back({{149,273},0,"District 20: T"});
-    poi.push_back({{153,197},0,"District 21: U"});
-    poi.push_back({{125,125},0,"District 22: V"});
-    poi.push_back({{85,86},0,"District 23: W"});
-    poi.push_back({{49,97},0,"District 24: X"});
-    poi.push_back({{23,176},0,"District 25: Y"});
+    poi.push_back({{96,235},0,"District 1: A",12});
+    poi.push_back({{80,223},0,"District 2: B",12});
+    poi.push_back({{81,267},0,"District 3: C",12});
+    poi.push_back({{106,266},0,"District 4: D",12});
+    poi.push_back({{113,209},0,"District 5: E",12});
+    poi.push_back({{86,181},0,"District 6: F",12});
+    poi.push_back({{61,211},0,"District 7: G",12});
+    poi.push_back({{63,283},0,"District 8: H",12});
+    poi.push_back({{90,315},0,"District 9: I",12});
+    poi.push_back({{124,291},0,"District 10: J",13});
+    poi.push_back({{132,221},0,"District 11: K",13});
+    poi.push_back({{120,167},0,"District 12: L",13});
+    poi.push_back({{87,139},0,"District 13: M",13});
+    poi.push_back({{53,153},0,"District 14: N",13});
+    poi.push_back({{41,209},0,"District 15: O",13});
+    poi.push_back({{40,263},0,"District 16: P",13});
+    poi.push_back({{55,338},0,"District 17: Q",13});
+    poi.push_back({{105,367},0,"District 18: R",13});
+    poi.push_back({{140,341},0,"District 19: S",13});
+    poi.push_back({{149,273},0,"District 20: T",13});
+    poi.push_back({{153,197},0,"District 21: U",13});
+    poi.push_back({{125,125},0,"District 22: V",13});
+    poi.push_back({{85,86},0,"District 23: W",13});
+    poi.push_back({{49,97},0,"District 24: X",13});
+    poi.push_back({{23,176},0,"District 25: Y",13});
     return poi;
 }
 void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
@@ -264,7 +267,7 @@ void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
     }
     wrefresh(win);
     if (scale>=0.25) {
-        textAnimation(win, poi[mark].name, maxy/2, (maxx/2)-2-poi[mark].len/2,offs); // the +2 needs to be fixed
+        textAnimation(win, poi[mark].name,poi[mark].len, maxy/2, (maxx/2)-2-poi[mark].len/2,offs); // the +2 needs to be fixed
     }
 }
 
@@ -275,7 +278,7 @@ void cityrender(){
 
     int offs = 2; // this actually needs to be implemented because some things are not displayed relative to the center but to the corner
 
-    std::vector<poi> poi = getPoi();
+    std::vector<poi> poi = tempgetPoi();
     map city = getMap();
     keypad(worldmap, true);
     int sc=0;
@@ -299,7 +302,7 @@ void cityrender(){
         vertex cit = {86,210};
 
         if (scale <= 0.25){ // make this a new thread
-            textAnimation(worldmap, "The City", maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, offs); // THIS IS NOT RELATIVE TO A WINDOW
+            textAnimation(worldmap, "The City",7, maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, offs); // THIS IS NOT RELATIVE TO A WINDOW
         }
         else {
             drawPoi(worldmap,poi, scale,offs);
