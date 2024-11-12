@@ -64,7 +64,7 @@ void wait() {
 }
 
 void textAnimation(WINDOW* win, std::string text, int len, int y, int x, int offs){
-    WINDOW* anim = newwin(1, len+4, y+offs, x+offs);
+    WINDOW* anim = newwin(1, len+3, y+offs, x+offs);
   //curs_set(2);
     std::string buffer;
     for (int i = 0;i<=len;i++){
@@ -302,7 +302,7 @@ void cityrender(){
         vertex cit = {86,210};
 
         if (scale <= 0.25){ // make this a new thread
-            textAnimation(worldmap, "The City",7, maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, offs); // THIS IS NOT RELATIVE TO A WINDOW
+            textAnimation(worldmap, "The City",8, maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, offs); // THIS IS NOT RELATIVE TO A WINDOW
         }
         else {
             drawPoi(worldmap,poi, scale,offs);
