@@ -97,7 +97,7 @@ int fetchData(std::string un, std::string pw){
 
                 goto back;
             }
-            case 2: { // worlddata
+            case 2: { // worlddata (NOT FINISHED)
                 if (socket.send(packet) != sf::Socket::Done){ // failed to send credentials
                     goto back;
                 }

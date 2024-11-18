@@ -134,12 +134,12 @@ int main(){
                 plr:
                 if (client.send(packet) != sf::Socket::Done){
                     goto plr;
-                    //potentially infinite loop
+                    // potentially infinite loop
                 }
                 std::cout << un << " received playerData\n";
                 break;
             }
-            case 2:{
+            case 2:{ // world data
                 // this needs to be finished
                 break;
             }

@@ -1,0 +1,13 @@
+// LOGIC
+
+// DATA
+Add a sector struct and data to networking and server stack.
+
+// VECTOR RENDER
+Implement render.cpp directly into /include and resolve duplicate functions
+After implementing render.cpp:
+    - Change map render data directory
+    - Use PlayerData for:
+        - Camera anchor
+        - Initializing camera
+        - Hidden nodes

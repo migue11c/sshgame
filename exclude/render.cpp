@@ -13,12 +13,14 @@
 //          This is so that you (likely) don't have to implement drawing each polygon.
 //          Good idea is to use mvwinchstr()
 // drawVector refactor (done)
-// Anchored camera view (done)
+// Anchored camera view (kinda done)
 // Unified system of loading vertices and returning a vector of vectors (i fucking hate and love this)
 // Point of interest additional information
 // draw and move between different sets of POIs based on scale
+// add POI level, so that not all are selectable
 // add hidden POIs that can't be interacted with unless a condition is satisfied
 // change camera anchor based on sector and scale
+// create a menu to exit the game or enter the settings page
 
 struct vertex{
     double y,x;
@@ -34,6 +36,7 @@ struct poi{ // needs additional info
     char name[24];
     int len;
     float scl; //scales the poi accordingly (what is this again?)
+    // ohhh it's for rendering the certain area
     // make sure to make an array of poi to make things easier later
 };
 
@@ -200,15 +203,17 @@ double distance(vertex st, vertex en){
 }
 
 std::vector<poi> getPoi(){
+    //bug: string incorrectly parsed
     std::vector<poi> Poi;
     std::ifstream file("map.dat");
     int i = 0;
     while (i<25){
-        poi buffer;
-        file >> buffer.coord.y >> buffer.coord.x >> buffer.cond;
-        buffer.len=0;
-        while (buffer.len<24){
-            file.get(buffer.name[buffer.len]);
+        poi buffer; // this buffer is reinitialized every time instead of just being cleared but it's fine cuz it's easier. Bother if you must.
+        file >> buffer.coord.y >> buffer.coord.x >> buffer.cond >> buffer.scl; // gets y, x and condition in 1 line.
+        buffer.len=0; // initializes text length
+        file.get(buffer.name[buffer.len]); // for some reason this needs to stay after a float
+        while (buffer.len<24){ // 24 characters
+            file.get(buffer.name[buffer.len]); // gets each character
             if (buffer.name[buffer.len] == '\n'){
                 buffer.name[buffer.len] = 0;
                 break;
@@ -272,13 +277,16 @@ void drawPoi(WINDOW* win, std::vector<poi> poi,double scale,int offs){
 }
 
 void cityrender(){
+    // right now all nodes render regardless of poi[i].cond
+    // needs inline save data implementation in order to experiment at all
+    // and i'm not about to go copy the save file loading
     WINDOW* border = newwin(getmaxy(stdscr)-2, getmaxx(stdscr)-2, 1, 1);
     WINDOW* worldmap = newwin(getmaxy(stdscr)-4, getmaxx(stdscr)-4, 2, 2);
     shell dist = getShell();
 
     int offs = 2; // this actually needs to be implemented because some things are not displayed relative to the center but to the corner
 
-    std::vector<poi> poi = tempgetPoi();
+    std::vector<poi> poi = getPoi();
     map city = getMap();
     keypad(worldmap, true);
     int sc=0;
@@ -296,8 +304,8 @@ void cityrender(){
             drawShell(worldmap, dist, scale);
         }
         //drawPos(cpos, scale);
-        drawVector(worldmap, maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0); // this is direction testing
-        drawVector(worldmap, 0, maxx/2-maxy, maxy, maxx/2+maxy, 4, 0);
+        //drawVector(worldmap, maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0); // this is direction testing
+        //drawVector(worldmap, 0, maxx/2-maxy, maxy, maxx/2+maxy, 4, 0);
         wrefresh(worldmap);
         vertex cit = {86,210};
 

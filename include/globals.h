@@ -17,6 +17,10 @@ struct timeAndDay {
     int hour;
 };
 
+struct sector{ // this will essentially be player information
+    int area,dis,plc; //area, district and place
+};
+
 struct itemData {
     int id;
     int stack = 1;
@@ -43,6 +47,7 @@ struct playerData{
     int hp;
     int dice[5];
     bool items[100];
+    sector loc;
 };
 
 struct line {
