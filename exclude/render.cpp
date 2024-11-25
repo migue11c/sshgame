@@ -118,27 +118,27 @@ void drawVector(WINDOW* win, int sty, int stx, int finy, int finx, int div, int 
     }
 }
 
-// work on this later
-void animVector(WINDOW* win){
-    float i=0;
-    bool done = false;
-    std::thread rf(refreshTimer,done);
-    rf.detach();
-    while (1){
-        wclear(win); //this clears entire window, need to localize it to vectors
-        // ...which means you also need a special window for vectors and to call it in args...
-        //
-        // also please refactor drawVector() to use vertex instead of x,y, and make a char arg to control what is being printed
-        drawVector(win,7, 5, 7, 20, 3, offs/3);
-        drawVector(win,7, 20, 17+cos(i/4)*5, 22+sin(i/4)*5, 3, offs/3);
-        drawVector(win,17+cos(i/4)*5, 22+sin(i/4)*5, 14, 8, 3, offs/3);
-        mvprintw(0, 0, "y: %f, x: %f",(17+cos(i/4)*5),(22+cos(i/4)*5));
-        drawVector(win,14, 8, 7, 5, 3, offs/3);
-        wait();
-        i++;
-    }
-    done = true;
-}
+  //// work on this later
+  //void animVector(WINDOW* win){
+  //    float i=0;
+  //    bool done = false;
+  //    std::thread rf(refreshTimer,done);
+  //    rf.detach();
+  //    while (1){
+  //        wclear(win); //this clears entire window, need to localize it to vectors
+  //        // ...which means you also need a special window for vectors and to call it in args...
+  //        //
+  //        // also please refactor drawVector() to use vertex instead of x,y, and make a char arg to control what is being printed
+  //        drawVector(win,7, 5, 7, 20, 3, offs/3);
+  //        drawVector(win,7, 20, 17+cos(i/4)*5, 22+sin(i/4)*5, 3, offs/3);
+  //        drawVector(win,17+cos(i/4)*5, 22+sin(i/4)*5, 14, 8, 3, offs/3);
+  //        mvprintw(0, 0, "y: %f, x: %f",(17+cos(i/4)*5),(22+cos(i/4)*5));
+  //        drawVector(win,14, 8, 7, 5, 3, offs/3);
+  //        wait();
+  //        i++;
+  //    }
+  //    done = true;
+  //}
 
 //this is temporary and needs to be replaced
 shell getShell(){
@@ -203,7 +203,6 @@ double distance(vertex st, vertex en){
 }
 
 std::vector<poi> getPoi(){
-    //bug: string incorrectly parsed
     std::vector<poi> Poi;
     std::ifstream file("map.dat");
     int i = 0;
@@ -227,7 +226,7 @@ std::vector<poi> getPoi(){
     return Poi;
 }
 
-std::vector<poi> tempgetPoi(){
+std::vector<poi> tempgetPoi(){ // obsolete now
     std::vector<poi> poi;
     poi.push_back({{96,235},0,"District 1: A",12});
     poi.push_back({{80,223},0,"District 2: B",12});

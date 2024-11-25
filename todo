@@ -1,7 +1,9 @@
 // LOGIC
 
 // DATA
-Add a sector struct and data to networking and server stack.
+Refactor getPoi() to make a 3 dimensional data vector.
+Refactor Poi rendering to look for points of interest in their respective sectors.
+Also add 2 points of reference. Starting and selected.
 
 // VECTOR RENDER
 Implement render.cpp directly into /include and resolve duplicate functions

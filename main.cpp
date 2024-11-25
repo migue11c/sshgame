@@ -71,7 +71,7 @@ int main(){
     LogThis(player::mydata.name);
     LogThis(player::mydata.faction);
     drawUser();
-    textAnimation(player::mydata.faction,10,xMax/2 - (player::mydata.faction.length()+4)/2);
+    textAnimation(stdscr, player::mydata.faction, player::mydata.faction.length(),10,xMax/2 - (player::mydata.faction.length()+4)/2,0);
     //just so it's sitting still
     getch();
     clear();
