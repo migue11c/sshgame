@@ -5,6 +5,24 @@ Refactor getPoi() to make a 3 dimensional data vector.
 Refactor Poi rendering to look for points of interest in their respective sectors.
 Also add 2 points of reference. Starting and selected.
 
+CHECK ALL SAVE DATA TYPES.
+
+SAVE DATA SPECIFICATIONS NEED TO BE VERY SPECIFIC AND HAVE EXACT SIZES
+SO THEY CAN BE ENCODED, SENT OVER THE NETWORK, AND DECODED EXTREMELY EASILY.
+SEND DATA IN BULK THROUGH TCP IT IS NOT THAT BIG DUDE.
+
+MAKE SURE TO CREATE A SPECIAL PACKING AND UNPACKING CPP SO BOTH CLIENT AND SERVER CAN USE IT
+
+SAVE DATA STRUCTURE:
+    Name (char[16])
+    Faction (uint) // faction id
+    Position // 3 position ids
+        - Region (uint)
+        - District (uint)
+        - Place (uint)
+    Dice (uint[5]) // 5 dice
+    Items (bool[128]) // 128 items, expand if necessary
+
 // VECTOR RENDER
 Implement render.cpp directly into /include and resolve duplicate functions
 After implementing render.cpp:
