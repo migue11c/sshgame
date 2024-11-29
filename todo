@@ -20,6 +20,9 @@ SAVE DATA STRUCTURE:
         - Region (uint)
         - District (uint)
         - Place (uint)
+    Time
+        - Hour (uint)
+        - Day (uint) // this var is ONLY checked and changed by the server
     Dice (uint[5]) // 5 dice
     Items (bool[128]) // 128 items, expand if necessary
 
