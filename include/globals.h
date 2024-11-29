@@ -21,9 +21,9 @@ struct sector{ // this will essentially be player information
 };
 
 struct itemData {
-    int id;
-    int stack = 1;
-    std::string name;
+    unsigned int id;
+    unsigned int stack = 1;
+    std::string name; //these need to be charrays
     std::string effect;
 };
 
@@ -33,13 +33,21 @@ struct settings{
 };
 
 struct playerData{
-    std::string name;
-    std::string faction;
-    int maxhp;
-    int hp;
+    std::string name; //needs to be char[16]
+    std::string faction; //needs to be uint and be interpreted by the client
+    sector loc;
+    int maxhp; //deprecated
+    int hp; //deprecated
+    timeAndDay time;
     int dice[5];
     bool items[100];
-    sector loc;
+};
+
+struct worldData {
+    std::string worldName;
+    unsigned int worldDay;
+    unsigned int dangerLevel[25];
+    itemData itemlist[100];
 };
 
 namespace world {
