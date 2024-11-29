@@ -16,10 +16,6 @@ void getWorldData(){
     for (int i = 0; i<26; i++){
         data >> world::dangerLevel[i];
     }
-    for (int i = 0; i<26; i++){
-        getline(data, world::maplist[i].name);
-        data >> world::maplist[i].x >> world::maplist[i].y >> world::maplist[i].id;
-    }
     for (int i = 0; i<100; i++){
         getline(data, world::itemlist[i].name);
         getline(data, world::itemlist[i].effect);
@@ -37,10 +33,6 @@ void writeWorldData(){
         data << world::dangerLevel[i] << " ";
     }
     data << std::endl;
-    for (int i = 0; i<52; i++){
-        data << world::maplist[i].name << std::endl;
-        data << world::maplist[i].x << " " << world::maplist[i].y << " " << world::maplist[i].id << " " << std::endl;
-    }
     for (int i = 0; i<100; i++){
         data << world::itemlist[i].name << std::endl << world::itemlist[i].effect << world::itemlist[i].id << std::endl;
     }

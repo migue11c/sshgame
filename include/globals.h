@@ -7,9 +7,8 @@
 #include <string>
 #include <vector>
 
-struct yxpoint {
-    int y;
-    int x;
+struct vertex {
+    double y,x;
 };
 
 struct timeAndDay {
@@ -18,7 +17,7 @@ struct timeAndDay {
 };
 
 struct sector{ // this will essentially be player information
-    int area,dis,plc; //area, district and place
+    int area,district,place; //area, district and place
 };
 
 struct itemData {
@@ -26,13 +25,6 @@ struct itemData {
     int stack = 1;
     std::string name;
     std::string effect;
-};
-
-struct mapDetails {
-    int x;
-    int y;
-    int id;
-    std::string name;
 };
 
 struct settings{
@@ -50,20 +42,10 @@ struct playerData{
     sector loc;
 };
 
-struct line {
-    yxpoint start;
-    yxpoint end;
-};
-
-struct shape {
-    std::vector<line> outline;
-};
-
 namespace world {
     inline std::string worldName;
     inline timeAndDay worldTime;
     inline int dangerLevel[26];
-    inline mapDetails maplist[52];
     inline itemData itemlist[100];
 };
 
