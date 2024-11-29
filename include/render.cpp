@@ -5,13 +5,32 @@
 #include <fstream>
 #include <thread>
 #include <chrono>
+#include <vector>
 
 #include "common.h"
+#include "globals.h"
 
 static vertex cpos = {0,0}; //THIS IS TEMPORARY AND NEEDS TO BE INITIALIZED BY SECTOR
+static int offs = 0;
+static vertex anchor{96,235};
 
+struct poi {
+    vertex coord;
+    unsigned int cond;
+    char name[24];
+    unsigned int len;
+    float scl;
+};
+
+//shell and map is redundant, please implement an array of walls.
 struct shell {
     vertex points[70];
+};
+struct map {
+    vertex points[30];
+};
+struct wall {
+    std::vector<vertex> points;
 };
 
 void wait() {
@@ -91,4 +110,13 @@ void drawShell(WINDOW* win, shell dist, double scale){
   //for (int i = 0; i<70;i++){ // this needs to be removed on release
   //    mvprintw(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x), "%d",i+1);
   //}
+}
+
+map getMap(){
+    map city;
+    std::ifstream in("map");
+    for (int i=0;i<30;i++){
+        in >> city.points[i].x >> city.points[i].y;
+    }
+    return city;
 }
