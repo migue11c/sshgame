@@ -15,6 +15,7 @@
 #include "include/globals.h"
 #include "include/logs.h"
 #include "include/player.h"
+#include "include/world.h"
 
 int main(){
     // exit lambda func
@@ -76,6 +77,7 @@ int main(){
     getch();
     clear();
     refresh();
+    cityrender();
     endwin();
     setSets();
     dumpAudio();

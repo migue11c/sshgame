@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <fstream>
-#include <iterator>
 #include <ncurses/ncurses.h>
 #include <string>
 #include <cmath>
@@ -156,10 +155,10 @@ void drawShell(WINDOW* win, shell dist, double scale){
     getmaxyx(win, maxy, maxx);
     for (int i = 0; i<69; i++){ //draws each segment to scale and with camera
         if (maxy/2+scale*(dist.points[i].y-cpos.y) >= 0 || maxx/2+scale*(dist.points[i].x-cpos.x) >= 0 ||
-                maxy/2+scale*(dist.points[(i+1)].y-cpos.y) < maxy || maxx/2+scale*(dist.points[(i+1)].x-cpos.x) < maxx){
+            maxy/2+scale*(dist.points[(i+1)].y-cpos.y) < maxy || maxx/2+scale*(dist.points[(i+1)].x-cpos.x) < maxx){
+                drawVector(win,maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x),
+                    maxy/2+scale*(dist.points[(i+1)].y-cpos.y), maxx/2+scale*(dist.points[(i+1)].x-cpos.x), 1, 0);
         }
-        drawVector(win,maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x),
-            maxy/2+scale*(dist.points[(i+1)].y-cpos.y), maxx/2+scale*(dist.points[(i+1)].x-cpos.x), 1, 0);
     }
   //for (int i = 0; i<70;i++){ // this needs to be removed on release
   //    mvprintw(maxy/2+scale*(dist.points[i].y-cpos.y), maxx/2+scale*(dist.points[i].x-cpos.x), "%d",i+1);
@@ -283,7 +282,7 @@ void cityrender(){
     WINDOW* worldmap = newwin(getmaxy(stdscr)-4, getmaxx(stdscr)-4, 2, 2);
     shell dist = getShell();
 
-    int offs = 2; // this actually needs to be implemented because some things are not displayed relative to the center but to the corner
+    offs = 2; // this actually needs to be implemented because some things are not displayed relative to the center but to the corner
 
     std::vector<poi> poi = getPoi();
     map city = getMap();

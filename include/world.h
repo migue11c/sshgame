@@ -6,5 +6,6 @@
 void getWorldData();
 void writeWorldData();
 void worldCleanup();
+void cityrender();
 
 #endif
