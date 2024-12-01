@@ -1,5 +1,14 @@
 // LOGIC
 
+DICE:
+Each die will represent a body part.
+Head/Mind/Perception
+Right arm/Force/Strength
+Left arm/Technique/Dexterity
+Right leg/Agility/Speed
+Left leg/Stability
+Chest/Heart/Emotion
+
 // DATA
 Refactor getPoi() to make a 3 dimensional data vector.
 Refactor Poi rendering to look for points of interest in their respective sectors.
@@ -23,7 +32,7 @@ PLAYER SAVE DATA STRUCTURE:
     Time
         - Hour (uint)
         - Day (uint) // this var is ONLY checked and changed by the server
-    Dice (uint[5]) // 5 dice
+    Dice (uint[6]) // 6 dice
     Items (bool[128]) // 128 items, expand if necessary
 
 WORLD DATA STRUCTURE:

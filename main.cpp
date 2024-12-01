@@ -70,9 +70,11 @@ int main(){
     }
     //gameaudio::kill = true;
     LogThis(player::mydata.name);
-    LogThis(player::mydata.faction);
+    //LogThis(player::mydata.faction);
     drawUser();
-    textAnimation(stdscr, player::mydata.faction, player::mydata.faction.length(),10,xMax/2 - (player::mydata.faction.length()+4)/2,0);
+
+    //this one is broken now
+    //textAnimation(stdscr, (char)player::mydata.faction, 1,10,xMax/2 - (2+4)/2,0);
     //just so it's sitting still
     getch();
     clear();

@@ -12,12 +12,11 @@ struct vertex {
 };
 
 struct timeAndDay {
-    int day;
-    int hour;
+    unsigned int day, hour;
 };
 
 struct sector{ // this will essentially be player information
-    int area,district,place; //area, district and place
+    unsigned int area,district,place; //area, district and place
 };
 
 struct itemData {
@@ -34,13 +33,13 @@ struct settings{
 
 struct playerData{
     char name[16]; //needs to be char[16]
-    std::string faction; //needs to be uint and be interpreted by the client
+    unsigned int faction; //needs to be uint and be interpreted by the client
     sector loc;
-    int maxhp; //deprecated
-    int hp; //deprecated
+    unsigned int maxhp; //deprecated
+    unsigned int hp; //deprecated
     timeAndDay time;
-    int dice[5];
-    bool items[100];
+    unsigned int dice[6];
+    unsigned int items[128];
 };
 
 struct worldData {
@@ -60,7 +59,6 @@ namespace world {
 namespace player {
     inline playerData mydata;
     inline std::string username;
-    inline timeAndDay playerTime;
 };
 
 namespace gameaudio {

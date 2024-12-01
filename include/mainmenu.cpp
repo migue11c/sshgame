@@ -174,7 +174,7 @@ void drawUser(){
                 break;
             case 1:
                 wmove(user, 1, 0);
-                wprintw(user, "Faction: %s",player::mydata.faction.c_str());
+                //wprintw(user, "Faction: %s",player::mydata.faction.c_str());
                 break;
             case 2:
                 wmove(user, 2, 0);
