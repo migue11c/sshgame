@@ -26,6 +26,20 @@ PLAYER SAVE DATA STRUCTURE:
     Dice (uint[5]) // 5 dice
     Items (bool[128]) // 128 items, expand if necessary
 
+WORLD DATA STRUCTURE:
+    Name (char[32])
+    MOTD (char[256])
+    Day (uint)
+    Danger (uint[25])
+    Trains (array) // TBD
+        Starting position
+            - Region (uint)
+            - District (uint)
+            - Place (uint)
+        Ending Position (same)
+        Departure time (uint) // hour of departure
+
+
 // VECTOR RENDER
 Implement render.cpp directly into /include and resolve duplicate functions
 After implementing render.cpp:

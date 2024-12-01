@@ -33,7 +33,7 @@ struct settings{
 };
 
 struct playerData{
-    std::string name; //needs to be char[16]
+    char name[16]; //needs to be char[16]
     std::string faction; //needs to be uint and be interpreted by the client
     sector loc;
     int maxhp; //deprecated

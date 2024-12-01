@@ -170,7 +170,7 @@ void drawUser(){
         switch (i) {
             case 0:
                 wmove(user, 0, 0);
-                wprintw(user, "Username: %s",player::mydata.name.c_str());
+                wprintw(user, "Username: %s",player::mydata.name);
                 break;
             case 1:
                 wmove(user, 1, 0);

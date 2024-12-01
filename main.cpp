@@ -15,7 +15,7 @@
 #include "include/globals.h"
 #include "include/logs.h"
 #include "include/player.h"
-#include "include/world.h"
+#include "include/data.h"
 
 int main(){
     // exit lambda func
