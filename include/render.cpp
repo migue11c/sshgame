@@ -10,6 +10,7 @@
 
 #include "common.h"
 #include "globals.h"
+#include "logs.h"
 
 // TODO: scanline floodfill algorithm https://lodev.org/cgtutor/floodfill.html
 //          This is so that you (likely) don't have to implement drawing each polygon.
@@ -52,10 +53,10 @@ void wait() {
 }
 
 void textAnimation(WINDOW* win, std::string text, int len, int y, int x, int offs){
-    WINDOW* anim = newwin(1, text.length()+4, y, x);
+    WINDOW* anim = newwin(1, len+3, y+offs, x+offs);
     //curs_set(2);
     std::string buffer;
-    for (int i = 0;i<text.length();i++){
+    for (int i = 0;i<=len;i++){
         wmove(anim,0, ((len+4)/2) - 1 - i/2);
         buffer += text[i];
         if (x>=0 && y>=0 && x<getmaxx(win) && y<getmaxy(win)){
@@ -105,9 +106,16 @@ void drawVector(WINDOW* win,int sty, int stx, int finy, int finx, int div, int o
 shell getShell(){ // temporary
     shell dist;
     std::ifstream in("walls");
-    for (int i=0;i<70;i++){
-        in >> dist.points[i].x >> dist.points[i].y;
+    if (!in.bad()){
+        LogThis("good walls dir");
+        for (int i=0;i<70;i++){
+            in >> dist.points[i].x >> dist.points[i].y;
+        }
     }
+    else {
+        LogThis("bad walls dir");
+    }
+    in.close();
     return dist;
 }
 
@@ -129,9 +137,16 @@ void drawShell(WINDOW* win, shell dist, double scale){ //essentially drawCity, j
 map getMap(){
     map city;
     std::ifstream in("map");
-    for (int i=0;i<30;i++){
-        in >> city.points[i].x >> city.points[i].y;
+    if (!in.bad()){
+        LogThis("good map");
+        for (int i=0;i<30;i++){
+            in >> city.points[i].x >> city.points[i].y;
+        }
     }
+    else {
+        LogThis("bad map");
+    }
+    in.close();
     return city;
 }
 
@@ -166,21 +181,27 @@ std::vector<poi> getPoi(){ // point of interest input
     std::vector<poi> Poi;
     std::ifstream file("map.dat");
     int i = 0;
-    while (i<25){
-        poi buffer; // this buffer is reinitialized every time instead of just being cleared but it's fine cuz it's easier. Bother if you must.
-        file >> buffer.coord.y >> buffer.coord.x >> buffer.cond >> buffer.scl; // gets y, x and condition in 1 line.
-        buffer.len=0; // initializes text length
-        file.get(buffer.name[buffer.len]); // for some reason this needs to stay after a float
-        while (buffer.len<24){ // 24 characters
-            file.get(buffer.name[buffer.len]); // gets each character
-            if (buffer.name[buffer.len] == '\n'){
-                buffer.name[buffer.len] = 0;
-                break;
+    if (!file.bad()){
+        LogThis("good map.dat");
+        while (i<25){
+            poi buffer; // this buffer is reinitialized every time instead of just being cleared but it's fine cuz it's easier. Bother if you must.
+            file >> buffer.coord.y >> buffer.coord.x >> buffer.cond >> buffer.scl; // gets y, x and condition in 1 line.
+            buffer.len=0; // initializes text length
+            file.get(buffer.name[buffer.len]); // for some reason this needs to stay after a float
+            while (buffer.len<24){ // 24 characters
+                file.get(buffer.name[buffer.len]); // gets each character
+                if (buffer.name[buffer.len] == '\n'){
+                    buffer.name[buffer.len] = 0;
+                    break;
+                }
+                buffer.len++;
             }
-            buffer.len++;
+            Poi.push_back(buffer);
+            i++;
         }
-        Poi.push_back(buffer);
-        i++;
+    }
+    else {
+        LogThis("bad map.dat");
     }
     file.close();
     return Poi;

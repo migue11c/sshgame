@@ -69,6 +69,7 @@ int main(){
         }
     }
     gameaudio::kill = true;
+    cityrender();
     LogThis(player::mydata.name);
     LogThis(player::mydata.faction);
     drawUser();
@@ -77,9 +78,7 @@ int main(){
     getch();
     clear();
     refresh();
-    cityrender();
     endwin();
-    setSets();
     dumpAudio();
     return 0;
 }
