@@ -68,8 +68,7 @@ int main(){
             return 1;
         }
     }
-    gameaudio::kill = true;
-    cityrender();
+    //gameaudio::kill = true;
     LogThis(player::mydata.name);
     LogThis(player::mydata.faction);
     drawUser();
@@ -78,6 +77,7 @@ int main(){
     getch();
     clear();
     refresh();
+    cityrender();
     endwin();
     dumpAudio();
     return 0;
