@@ -37,8 +37,8 @@ int fetchData(std::string un, std::string pw){
         value = 2;
         return value;
     }
-    sf::Socket::Status status = socket.connect(sf::IpAddress::getLocalAddress(), 53000);
-    //sf::Socket::Status status = socket.connect("miguell.duckdns.org", 41702);
+    //sf::Socket::Status status = socket.connect(sf::IpAddress::getLocalAddress(), 53000);
+    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 41702);
 
     if (att <= 20){
         // code goes here
