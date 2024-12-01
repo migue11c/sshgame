@@ -71,7 +71,7 @@ void textAnimation(WINDOW* win, std::string text, int len, int y, int x, int off
     //refresh();
 }
 
-void drawVector(WINDOW* win,int sty, int stx, int finy, int finx, int div, int offs){
+void drawVector(WINDOW* win, int sty, int stx, int finy, int finx, int div, int offs){
     int dy = abs(finy - sty);
     int sy = sty < finy ? 1 : -1;
     int dx = abs(finx - stx);
@@ -79,9 +79,9 @@ void drawVector(WINDOW* win,int sty, int stx, int finy, int finx, int div, int o
     int err = (dx > dy ? dx : -dy)/2, e2;
     int i = 0;
     while(1){
-    	wmove(stdscr, sty, stx);
-        if ((i+offs)%div == 0){
-            wprintw(stdscr, "#");
+        wmove(win, sty, stx);
+        if (sty>=0 && stx>=0 && sty<getmaxy(win) && stx<getmaxx(win) && (i+offs)%div == 0){
+            wprintw(win, "#");
         }
 
         if (stx==finx && sty==finy){
@@ -99,6 +99,8 @@ void drawVector(WINDOW* win,int sty, int stx, int finy, int finx, int div, int o
             err += dx;
             sty += sy;
         }
+        // end: why did i do this again?
+        //
         i++;
     }
 }
