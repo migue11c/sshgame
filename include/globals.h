@@ -1,9 +1,6 @@
 #ifndef _GLBL_H
 #define _GLBL_H
 
-#include <SFML/Audio.hpp>
-#include <SFML/Audio/Music.hpp>
-#include <SFML/Audio/SoundBuffer.hpp>
 #include <string>
 #include <vector>
 
@@ -59,13 +56,6 @@ namespace world {
 namespace player {
     inline playerData mydata;
     inline std::string username;
-};
-
-namespace gameaudio {
-    inline bool kill = false;
-    const std::string musicdir = "menu.ogg";
-    inline sf::SoundBuffer keybuffer[2];
-    inline sf::Music music;
 };
 
 namespace clset {

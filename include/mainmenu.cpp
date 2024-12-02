@@ -225,6 +225,7 @@ void cityrender(){
     box(border, 0, 0);
     mvwprintw(border, 0, 3, "[World Map]");
     wrefresh(border);
+    int choice;
     while(1){ // the animations here are linear. find a way to add a bezier curve to them
         wclear(worldmap);
         drawCity(worldmap,city,scale);
@@ -245,7 +246,10 @@ void cityrender(){
         }
         // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
         ch:
-        switch (wgetch(worldmap)) { // please work on the dist method. it doesn't work properly
+        choice = wgetch(worldmap);
+        std::thread press(playKey, choice);
+        press.detach();
+        switch (choice) { // please work on the dist method. it doesn't work properly
             case KEY_UP:{
                 std::vector<double> dist;
                 for (int i=0; i<poi.size();i++){

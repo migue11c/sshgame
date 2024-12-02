@@ -6,15 +6,17 @@
 #include <SFML/Network/Socket.hpp>
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/TcpSocket.hpp>
-
 #include <SFML/System/Time.hpp>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <ctime> // this is for auth
 #include <cstring>
 #include <csignal>
 
+#include "include//globals.h"
+#include "include//data.h"
 // MAKE SURE TO FIRST CHECK FOR HASHED KEY
 
 // this func is copied over from login.cpp on the client

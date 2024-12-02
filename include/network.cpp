@@ -10,6 +10,7 @@
 #include <ncurses/ncurses.h>
 #include "globals.h"
 #include "logs.h"
+#include "data.h"
 
 // philosophy behind this client-server interaction is that the client ALWAYS makes requests
 // and expects a result. If the result is not sent over, a new connection is attempted.
@@ -37,8 +38,8 @@ int fetchData(std::string un, std::string pw){
         value = 2;
         return value;
     }
-    //sf::Socket::Status status = socket.connect(sf::IpAddress::getLocalAddress(), 53000);
-    sf::Socket::Status status = socket.connect("miguell.duckdns.org", 41702);
+    sf::Socket::Status status = socket.connect(sf::IpAddress::getLocalAddress(), 53000);
+    //sf::Socket::Status status = socket.connect("miguell.duckdns.org", 41702);
 
     if (att <= 20){
         // code goes here
@@ -77,19 +78,7 @@ int fetchData(std::string un, std::string pw){
                 if (socket.receive(packet) != sf::Socket::Done){ // failed to receive packet
                     goto back;
                 }
-
-                packet >> player::mydata.name >> player::mydata.faction; //>> player::playerTime.hour >> player::mydata.maxhp >> player::mydata.hp // gets confirmation
-                sf::Uint64 buffer;
-                bool num;
-                for (int l = 0; l < 5; l++){
-                    packet >> buffer;
-                    player::mydata.dice[l] = buffer;
-                }
-                for (int l = 0; l < 100; l++){
-                    packet >> num;
-                    player::mydata.items[l] = num;
-                }
-
+                player::mydata = unpackPlayer(packet);
                 packet.clear();
                 LogThis("playerData fetched...");
                 i++;
