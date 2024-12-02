@@ -20,7 +20,7 @@ SKILLS:
     Combat system is almost fully copied from ruina except you roll a single number.
     Every skill will have its' own damage rolling formula. It is very possible to outscale your enemies (and intentional).
     Example:
-        Moulinet ((EMT/10)*(5+2xSTB+AGL))
+        Moulinet ((EMT/10)*(5+2xSTL+AGL))
 
 LOSS OF A FIGHT DOES NOT RESULT IN DEATH:
     There will be fights you will have to face alone, and there will be operations where you command a squad.
