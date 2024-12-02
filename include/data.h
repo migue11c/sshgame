@@ -12,6 +12,5 @@ sf::Packet packPlayer(playerData in);
 playerData unpackPlayer(sf::Packet in);
 sf::Packet packWorld(worldData in);
 worldData unpackWorld(sf::Packet in);
-void cityrender();
 
 #endif

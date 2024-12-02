@@ -11,5 +11,6 @@ void settingsScreen(int ymax, int xmax);
 int mainScreenOptions(int ymax, int xmax);
 void wait();
 void drawVector(WINDOW* win, int sty, int stx, int finy, int finx, int div, int offs);
+void cityrender();
 
 #endif

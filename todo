@@ -7,15 +7,18 @@ Each die will represent a body part.
     TEC Left arm/Technique/Dexterity
     AGL Right leg/Agility/Speed
     STL Left leg/Stability
-    EMT Chest/Heart/Emotion (this die cannot be changed and it rolls from 0 to 20)
+    EMT Chest/Heart/Emotion (this die cannot be changed and it rolls a d6, total roll is between 0 and 20)
 
-    Emotion rolls are calculated as follows:
-        final roll = player emotion
+EMOTION:
+    It is consisting of two values EMT roll and EMT modifier.
+    EMT modifier is a controllable variable that goes from 0 to 14.
+    This assures that emotion rolls go from 0 to 20. Not higher or lower.
 
 SKILLS:
-Each skill will use a different formula for rolling clash/damage.
-Combat system is almost fully copied from ruina except you roll a single number.
-Example: Moulinet ((EMT/10)*(5+2xSTB+AGL))
+    Each skill will use a different formula for rolling clash/damage.
+    Combat system is almost fully copied from ruina except you roll a single number.
+    Example:
+        Moulinet ((EMT/10)*(5+2xSTB+AGL))
 
 // DATA
 Refactor getPoi() to make a 3 dimensional data vector.

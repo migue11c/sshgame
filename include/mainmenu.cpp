@@ -1,9 +1,11 @@
 #include <ncurses/ncurses.h>
+#include <algorithm>
 #include <fstream>
 #include <string>
 #include <thread>
 
 #include "audiostuff.h"
+#include "render.h"
 #include "common.h"
 #include "globals.h"
 #include "player.h"
@@ -202,4 +204,211 @@ void drawUser(){
     }
     wrefresh(user);
     LogThis("drawn userdata");
+}
+
+void cityrender(){
+    // right now all nodes render regardless of poi[i].cond
+    WINDOW* border = newwin(getmaxy(stdscr)-2, getmaxx(stdscr)-2, 1, 1);
+    WINDOW* worldmap = newwin(getmaxy(stdscr)-4, getmaxx(stdscr)-4, 2, 2);
+    shell dist = getShell();
+
+    int offs = 2; // this actually needs to be implemented because some things are not displayed relative to the center but to the corner
+
+    std::vector<poi> poi = getPoi();
+    map city = getMap();
+    keypad(worldmap, true);
+    int sc=0;
+    double scale = 0.2;
+    cpos = poi[0].coord;
+    float maxx,maxy;
+    getmaxyx(worldmap, maxy, maxx);
+    box(border, 0, 0);
+    mvwprintw(border, 0, 3, "[World Map]");
+    wrefresh(border);
+    while(1){ // the animations here are linear. find a way to add a bezier curve to them
+        wclear(worldmap);
+        drawCity(worldmap,city,scale);
+        if (scale > 0.25){
+            drawShell(worldmap, dist, scale);
+        }
+        drawPos(cpos, scale);
+        //drawVector(worldmap, maxy, maxx/2-maxy, 0, maxx/2+maxy, 4, 0); // this is direction testing
+        //drawVector(worldmap, 0, maxx/2-maxy, maxy, maxx/2+maxy, 4, 0);
+        wrefresh(worldmap);
+        vertex cit = {86,210};
+
+        if (scale <= 0.25){ // make this a new thread
+            textAnimation(worldmap, "The City",8, maxy/2+scale*(cit.y-cpos.y), maxx/2+scale*(cit.x-cpos.x)-4, offs); // THIS IS NOT RELATIVE TO A WINDOW
+        }
+        else {
+            drawPoi(worldmap,poi, scale,offs);
+        }
+        // this manually moves the camera by pixels (this will be useful for dungeons but not for this)
+        ch:
+        switch (wgetch(worldmap)) { // please work on the dist method. it doesn't work properly
+            case KEY_UP:{
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if (2*(poi[i].coord.y-cpos.y) <= -std::abs(poi[i].coord.x-cpos.x) && // vertical
+                        poi[i].coord.y-cpos.y != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                  //mvwprintw(stdscr, i, 0, "%d, %f",i,dist[i]);
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it].coord;
+                }
+                else{
+                    goto ch;
+                }
+              //getch();
+                break;
+            }
+            case KEY_DOWN:{
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if (2*(poi[i].coord.y-cpos.y) >= std::abs(poi[i].coord.x-cpos.x) && // vertical
+                        poi[i].coord.y-cpos.y != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                  //mvwprintw(stdscr, i, 0, "%d, %f",i,dist[i]);
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it].coord;
+                }
+                else{
+                    goto ch;
+                }
+              //getch();
+                break;
+            }
+            case KEY_LEFT:{
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if (poi[i].coord.x-cpos.x <= -2*std::abs(poi[i].coord.y-cpos.y) && // vertical
+                        poi[i].coord.x-cpos.x != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                  //mvwprintw(stdscr, i, 0, "%d, %f",i,dist[i]);
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it].coord;
+                }
+                else{
+                    goto ch;
+                }
+              //getch();
+                break;
+            }
+            case KEY_RIGHT:{
+                std::vector<double> dist;
+                for (int i=0; i<poi.size();i++){
+                    if (poi[i].coord.x-cpos.x >= 2*std::abs(poi[i].coord.y-cpos.y) && // vertical
+                        poi[i].coord.x-cpos.x != 0){ // it goes up
+                            dist.push_back(distance(cpos, poi[i].coord));
+                    }
+                    else{
+                        dist.push_back(99999);
+                    }
+                  //mvwprintw(stdscr, i, 0, "%d, %f",i,dist[i]);
+                }
+                int it = std::distance(dist.begin(),std::min_element(dist.begin(),dist.end()));
+                if (dist[it] != 99999){
+                    cpos = poi[it].coord;
+                  //cpos = {poi[it].coord.y - anchor.y,poi[it].coord.x - anchor.x}; //test of anchor
+                }
+                else{
+                    goto ch;
+                }
+              //getch();
+                break;
+            }
+
+            case 'z':{
+                switch (sc){
+                    case 0:{
+                        for (int i = 0; i<5; i++){
+                            scale += 0.05;
+                            drawCity(worldmap, city,scale);
+                            if (scale >= 0.25){
+                                drawShell(worldmap,dist,scale);
+                            }
+                            wrefresh(worldmap);
+                            wait();
+                        }
+                        sc++;
+                        break;
+                    }
+                    case 1:{
+                        for (int i = 0; i<5; i++){
+                            scale += 0.11;
+                            drawCity(worldmap, city,scale);
+                            if (scale >= 0.25){
+                                drawShell(worldmap,dist,scale);
+                            }
+                            wrefresh(worldmap);
+                            wait();
+                        }
+                        sc++;
+                        break;
+                    }
+                    default:{
+                        goto ch;
+                    }
+                }
+                break;
+            }
+            case 'x':{
+                switch (sc){
+                    case 1:{
+                        for (int i = 0; i<5; i++){
+                            scale -= 0.05;
+                            drawCity(worldmap, city,scale);
+                            if (scale >= 0.25){
+                                drawShell(worldmap,dist,scale);
+                            }
+                            wrefresh(worldmap);
+                            wait();
+                        }
+                        sc--;
+                        break;
+                    }
+                    case 2:{
+                        for (int i = 0; i<5; i++){
+                            scale -= 0.11;
+                            drawCity(worldmap, city,scale);
+                            if (scale >= 0.25){
+                                drawShell(worldmap,dist,scale);
+                            }
+                            wrefresh(worldmap);
+                            wait();
+                        }
+                        sc--;
+                        break;
+                    }
+                    default:{
+                        goto ch;
+                    }
+                }
+                break;
+            }
+            default:{
+                goto ch; //this skips the text rendering
+            }
+        }
+    }
+    //drawVector(city.points[0].y+0, city.points[0].x+0, city.points[1].y+0, city.points[1].x+0, 1, 0);
+    //animVector();
 }
