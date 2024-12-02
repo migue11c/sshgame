@@ -16,9 +16,22 @@ EMOTION:
 
 SKILLS:
     Each skill will use a different formula for rolling clash/damage.
+    Skills are learnt and will be arrangable in a deck of several cards.
     Combat system is almost fully copied from ruina except you roll a single number.
+    Every skill will have its' own damage rolling formula. It is very possible to outscale your enemies (and intentional).
     Example:
         Moulinet ((EMT/10)*(5+2xSTB+AGL))
+
+LOSS OF A FIGHT DOES NOT RESULT IN DEATH:
+    There will be fights you will have to face alone, and there will be operations where you command a squad.
+    Your own character is a priority. You will be tested by your squadmates.
+    Loss of HP determines an unsuccessful operation. It will come with a time penalty along with an emotion penalty.
+
+VICTORY IS IMMINENT:
+    No matter your background, every choice, even if crippling, will scale you tenfold.
+    Treat this as a DND session. There are no wrong choices, only different content.
+    You will most definetly miss out on other things. Every player will have a different experience.
+
 
 // DATA
 Refactor getPoi() to make a 3 dimensional data vector.
@@ -46,8 +59,9 @@ PLAYER SAVE DATA STRUCTURE:
     Dice (uint[6]) // 6 dice
     Items (bool[128]) // 128 items, expand if necessary
 
+    Right now there is hp and maxhp. I guess it can be used.
+
 WORLD DATA STRUCTURE:
-    Name (char[32])
     MOTD (char[256])
     Day (uint)
     Danger (uint[25])
@@ -61,7 +75,6 @@ WORLD DATA STRUCTURE:
 
 
 // VECTOR RENDER
-Implement render.cpp directly into /include and resolve duplicate functions
 After implementing render.cpp:
     - Change map render data directory
     - Use PlayerData for:

@@ -84,7 +84,7 @@ void drawVector(WINDOW* win, int sty, int stx, int finy, int finx, int div, int 
 
 shell getShell(){ // temporary
     shell dist;
-    std::ifstream in("walls");
+    std::ifstream in("resources//walls");
     if (!in.bad()){
         LogThis("good walls dir");
         for (int i=0;i<70;i++){
@@ -112,7 +112,7 @@ void drawShell(WINDOW* win, shell dist, double scale){ //essentially drawCity, j
 
 map getMap(){
     map city;
-    std::ifstream in("map");
+    std::ifstream in("resources//map");
     if (!in.bad()){
         LogThis("good map");
         for (int i=0;i<30;i++){
@@ -149,7 +149,7 @@ double distance(vertex st, vertex en){ // logic
 
 std::vector<poi> getPoi(){ // point of interest input
     std::vector<poi> Poi;
-    std::ifstream file("map.dat");
+    std::ifstream file("resources//map.dat");
     int i = 0;
     if (!file.bad()){
         LogThis("good map.dat");
