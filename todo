@@ -12,7 +12,7 @@ Each die will represent a body part.
 EMOTION:
     It is consisting of two values EMT roll and EMT modifier.
     EMT modifier is a controllable variable that goes from 0 to 14.
-    This assures that emotion rolls go from 0 to 20. Not higher or lower.
+    This assures that emotion rolls go from 1 to 20. Not higher or lower.
 
 SKILLS:
     Each skill will use a different formula for rolling clash/damage.
