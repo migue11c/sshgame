@@ -21,7 +21,7 @@
 
 // this func is copied over from login.cpp on the client
 bool auth(std::string username, std::string password) {
-    std::ifstream list("userlist");
+    std::ifstream list("server/userlist");
     std::string buffer;
     while(list >> buffer){
         if (strcmp(username.c_str(), buffer.c_str())==0){
@@ -97,7 +97,7 @@ int main(){
                 break;
             }
             case 1:{
-                std::string dir = "users/" + un + ".dat";
+                std::string dir = "server/users/" + un + ".dat";
                 std::string name,faction;
                 std::ifstream player(dir);
                 if (player.bad()){
