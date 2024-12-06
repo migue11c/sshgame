@@ -48,33 +48,56 @@ void textAnimation(WINDOW* win, std::string text, int len, int y, int x, int off
     //refresh();
 }
 
+char dspchar(int sy, int sx, bool mvy, bool mvx){
+    if (mvy != mvx) {
+        if (mvy) {
+            return '|';
+        }
+        else {
+            return '-';
+        }
+    }
+
+    if (sy == 1 && sx == 1 || sy == -1 && sx == -1) {
+        return '\\';
+    }
+    else {
+        return '/';
+    }
+    // '/', '\\', '|', '-'
+}
+
 void drawVector(WINDOW* win, int sty, int stx, int finy, int finx, int div, int offs){
     int dy = abs(finy - sty);
     int sy = sty < finy ? 1 : -1;
     int dx = abs(finx - stx);
     int sx = stx < finx ? 1 : -1;
     int err = (dx > dy ? dx : -dy)/2, e2;
+    bool mvx, mvy;
     int i = 0;
     while(1){
         wmove(win, sty, stx);
         if (sty>=0 && stx>=0 && sty<getmaxy(win) && stx<getmaxx(win) && (i+offs)%div == 0){
-            wprintw(win, "#");
+            wprintw(win, "%c", dspchar(sy,sx,mvy,mvx));
         }
 
         if (stx==finx && sty==finy){
             break;
         }
-
+        mvx = false;
+        mvy = false;
         e2=err;
 
         if (e2 > -dx){
             err -= dy;
             stx += sx;
+            mvx = true;
         }
 
         if (e2 < dy){
             err += dx;
             sty += sy;
+            mvy = true;
         }
         // end: why did i do this again?
         //

@@ -69,7 +69,7 @@ bool login(int ymax, int xmax){
             std::thread press(playKey,chr); //this right here took me so long
             press.detach();
 
-            if (chr == KEY_BACKSPACE || chr == KEY_DC || chr == 127){
+            if (chr == KEY_BACKSPACE || chr == KEY_DC || chr == 127 || chr == 8){
                 if (i==0)
                     goto uInp;
                 i--;
