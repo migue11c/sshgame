@@ -40,7 +40,7 @@ struct playerData{
 };
 
 struct worldData {
-    std::string worldName;
+    char motd[256];
     unsigned int worldDay;
     unsigned int dangerLevel[25];
     itemData itemlist[100];
@@ -49,7 +49,7 @@ struct worldData {
 namespace world {
     inline std::string worldName;
     inline timeAndDay worldTime;
-    inline int dangerLevel[26];
+    inline int dangerLevel[25];
     inline itemData itemlist[100];
 };
 

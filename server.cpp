@@ -51,8 +51,7 @@ int main(){
     //signal(SIGTSTP, lam);
 
     sf::TcpListener listener;
-
-    while (c<50){
+    while (c<50) {
         //sf::Packet packet;
         start:
         if (listener.listen(53000) != sf::Socket::Done){
@@ -66,6 +65,7 @@ int main(){
         }
         std::cout << client.getRemoteAddress() << " connected\n";
         // needs to terminate connection after client refuses to send a request
+        // timeout needs to be set
 
         sf::Packet packet;
         if (client.receive(packet) != sf::Socket::Done){
@@ -95,28 +95,30 @@ int main(){
         // tempkey is used for confirming your current session when making further requests
         //
         // a really really useful thing would be static player data size and converted
-        // into byte format
+        // into binary format. This is alright for saving and reading locally stored data.
+        // However SFML's implementation of TCP prevents me from actually sending packets
+        // of a custom struct or custom bytesize.
 
-        switch (check){
-            case 0:{
+        switch (check) {
+            case 0: {
                 auth:
-                if (!auth(un,pw)){ // username/password checker
+                if (!auth(un,pw)) { // username/password checker
                     packet << "neg0";
-                    if (client.send(packet) != sf::Socket::Done){
+                    if (client.send(packet) != sf::Socket::Done) {
                         goto auth;
                     }
                     std::cout << client.getRemoteAddress() <<" failed login auth (" << un << ", " << pw << ")\n";
                 }
                 else {
                     packet << "pos0";
-                    if (client.send(packet) != sf::Socket::Done){
+                    if (client.send(packet) != sf::Socket::Done) {
                         goto auth;
                     }
                     std::cout << client.getRemoteAddress() << " logged in as " << un << "\n";
                 }
                 break;
             }
-            case 1:{
+            case 1: {
                 std::string dir = "server/users/" + un + ".dat";
                 std::string name,faction;
                 std::ifstream player(dir);
@@ -130,22 +132,22 @@ int main(){
                 sf::Uint64 buffer;
                 char cbuf;
                 bool num;
-                for (int i = 0; i<5; i++){
+                for (int i = 0; i<5; i++) {
                     player >> buffer;
                     packet << buffer;
                 }
-                for (int i = 0; i<100; i++){
+                for (int i = 0; i<100; i++) {
                     player >> cbuf;
                     switch (cbuf) {
-                        case 49:{
+                        case 49: {
                             num = 1;
                             break;
                         }
-                        case 48:{
+                        case 48: {
                             num = 0;
                             break;
                         }
-                        default:{
+                        default: {
                             num = 0;
                             break;
                         }
@@ -154,18 +156,18 @@ int main(){
                 }
                 player.close();
                 plr:
-                if (client.send(packet) != sf::Socket::Done){
+                if (client.send(packet) != sf::Socket::Done) {
                     goto plr;
                     // potentially infinite loop
                 }
                 std::cout << un << " received playerData\n";
                 break;
             }
-            case 2:{ // world data
+            case 2: { // world data
                 // this needs to be finished
                 break;
             }
-            default:{
+            default: {
                 break;
             }
         }
