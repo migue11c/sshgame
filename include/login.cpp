@@ -70,6 +70,11 @@ bool login(int ymax, int xmax){
             press.detach();
 
             if (chr == KEY_BACKSPACE || chr == KEY_DC || chr == 127 || chr == 8){
+                // KEY_BACKSPACE    ncurses backspace
+                // KEY_DC           ncurses del
+                // 127              delete control character (ASCII)
+                // 8                WSL backspace
+                // 83               WSL del (THIS DOES NOT WORK)
                 if (i==0)
                     goto uInp;
                 i--;

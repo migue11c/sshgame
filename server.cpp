@@ -77,6 +77,26 @@ int main(){
         sf::Uint32 key;
         packet >> check >> un >> pw; // replace this with key
         packet.clear();
+
+        // needs a seperate function to handle clients.
+        // clients also need to be put in a queue.
+        //
+        // check cases:
+        // 0        authentication (in:key, out:tempkey)
+        // 1        player save data request (in:tempkey, out:pdata)
+        // 2        world save data request (in:tempkey, out:wdata)
+        // 3        player save submission (in:tempkey & pdata, out:bool)
+        //
+        // key logic:
+        // key = hash of usernamepassword, locally stored
+        // tempkey = hash of srand, temporarily stored
+        //
+        // key is used for confirming your identity
+        // tempkey is used for confirming your current session when making further requests
+        //
+        // a really really useful thing would be static player data size and converted
+        // into byte format
+
         switch (check){
             case 0:{
                 auth:
