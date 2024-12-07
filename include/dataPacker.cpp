@@ -1,5 +1,6 @@
 #include <SFML/Config.hpp>
 #include <SFML/Network/Packet.hpp>
+#include <fstream>
 
 #include "globals.h"
 
@@ -9,7 +10,11 @@ worldData readWD() {
     return out;
 }
 
-playerData readPD() {
+playerData readPD(std::string un) {
+    std::string dir;
+    dir = "users/" + un + ".dat";
+    std::ifstream data(dir);
+
     playerData out;
     return out;
 }
