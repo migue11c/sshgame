@@ -73,6 +73,10 @@ WORLD DATA STRUCTURE:
         Ending Position (same)
         Departure time (uint) // hour of departure
 
+// NETWORKING AND SAVE STATE MANAGEMENT
+
+try this for hashing michael
+https://github.com/RedSpah/xxhash_cpp?tab=readme-ov-file
 
 // VECTOR RENDER
 After implementing render.cpp:

@@ -10,12 +10,21 @@ worldData readWD() {
     return out;
 }
 
-playerData readPD(std::string un) {
+playerData readPD(std::string un) { // needs testing
     std::string dir;
     dir = "users/" + un + ".dat";
-    std::ifstream data(dir);
-
     playerData out;
+    std::ifstream data(dir);
+    data >> out.name >> out.faction >> out.loc.area >> out.loc.district
+        >> out.loc.place >> out.maxhp >> out.hp >> out.time.day
+        >> out.time.hour;
+    for (int i=0;i<6;i++) {
+        data >> out.dice[i];
+    }
+    for (int i=0;i<128;i++) {
+        data >> out.items[i];
+    }
+
     return out;
 }
 
@@ -23,8 +32,20 @@ void writeWD(worldData in) {
 
 }
 
-void writePD(playerData in) {
-
+void writePD(playerData in, std::string un) { // needs testing
+    std::string dir;
+    dir = "users/" + un + ".dat";
+    std::ofstream data(dir);
+    data << in.name << " " << in.faction << " " << in.loc.area
+        << " " << in.loc.district << " " << in.loc.place << " "
+        << in.maxhp << " " << in.hp << " " << in.time.day << " "
+        << in.time.hour << "\n";
+    for (int i=0;i<6;i++) {
+        data << in.dice[i];
+    }
+    for (int i=0;i<128;i++) {
+        data << in.items[i];
+    }
 }
 
 // these are used by both server and client
