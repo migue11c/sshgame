@@ -1,2 +1,1 @@
-
-g++ main.cpp -o game include/*.cpp icon.res -lncursesw -lsfml-audio -lsfml-network -lsfml-system -Iinclude -pthread
+g++ main.cpp -Iinclude .\include\audiostuff.cpp .\include\dataPacker.cpp .\include\login.cpp .\include\logs.cpp .\include\mainmenu.cpp .\include\network.cpp .\include\render.cpp .\include\settings.cpp .\include\worlddata.cpp -o game icon.res -lncursesw -lsfml-audio -lsfml-network -lsfml-system -pthread
